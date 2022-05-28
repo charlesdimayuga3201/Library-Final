@@ -1,9 +1,20 @@
 from tkinter import *
+import tkinter as tk
+from pathlib import Path
 import pymysql as p
 from tkinter import messagebox
 from tkinter.ttk import Combobox
 from tkinter.ttk import Treeview
 import datetime
+
+from tkinter import Canvas, Entry, Text, Button, PhotoImage
+
+OUTPUT_PATH = Path(__file__).parent
+images_PATH = OUTPUT_PATH / Path("./images")
+
+
+def relative_to_images(path: str) -> Path:
+    return images_PATH / Path(path)
 
 b1,b2,b3,b4,b5,b6,b7,b8,sID,cur,con,e1,e2,e3,e4,e5,i,ps=None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
 window,win=None,None
@@ -14,7 +25,7 @@ month=['January','February','March','April','May','June','July','August','Septem
 y = list(range(2020, 2040))
 d = list(range(1,32))
 
-def loginlibr():
+def loginstd():
     global window,sID
     connectdb()
     for i in range(cur.rowcount):
@@ -23,20 +34,18 @@ def loginlibr():
             sID=e1.get()
             print(sID)
             closedb()
-            libr()
+            stud()
             break
     else:
-        window.withdraw()
-        closedb()
-        home()
+        messagebox.showinfo("Error","Failed to Login")
 
-def libr():
+def stud():
     global window
     window.withdraw()
     global win,b1,b2,b3,b4
     win=Tk()
     win.title('Library')
-    win.geometry("400x400+480+180")
+    win.geometry("878x702")
     win.resizable(False,False)
     b1=Button(win, height=2,width=25,text=' Borrow Book ',command=borrowbook)
     b2=Button(win, height=2,width=25,text=' Return Book ',command=returnbook)
@@ -56,7 +65,7 @@ def addbook():
     win.destroy()
     win=Tk()
     win.title('Add Book')
-    win.geometry("400x400+480+180")
+    win.geometry("878x702")
     win.resizable(False,False)
     sub=Label(win,text='TITLE')
     tit=Label(win,text='AUTHOR')
@@ -93,19 +102,19 @@ def addbooks():
     win.destroy()
     messagebox.showinfo("Book", "Book Added")
     closedb()
-    libr()
+    stud()
 
 def closebooks():
     global win
     win.destroy()
-    libr()
+    stud()
 
 def borrowbook():
     global win,sID
     win.destroy()
     win=Tk()
     win.title('BORROW Book')
-    win.geometry("400x400+480+180")
+    win.geometry("878x702")
     win.resizable(False,False)
     name=Label(win,text='BORROW ',font='Helvetica 30 bold')
     
@@ -156,13 +165,13 @@ def borrowbooks():
     win.destroy()
     messagebox.showinfo("Book", "Book Borrowed")
     closedb()
-    libr()
+    stud()
 def returnbook():
     global win
     #win.destroy()
     win=Tk()
     win.title('Return Book')
-    win.geometry("400x400+480+180")
+    win.geometry("878x702")
     win.resizable(False,False)
     ret=Label(win,text='RETURN ',font='Helvetica 30 bold')
     book=Label(win,text='BOOK',font='Helvetica 30 bold')
@@ -188,19 +197,19 @@ def returnbooks():
     connectdb()
     print (e4.get())
     a='Update BookBorrow Set returnbook = %s Where bookids = %s '
-    status = "Returned Book"
+    status = "Returned"
     val = (status,e4.get()) 
     cur.execute(a,val)
     con.commit()
    
     win.destroy()
     closedb()
-    libr()
+    stud()
 
 def viewbook():
     win=Tk()
     win.title('View Books')
-    win.geometry("800x300+270+180")
+    win.geometry("878x702")
     win.resizable(False,False)
 
     treeview=Treeview(win,columns=("Title","Author","Genre","Book ID"),show='headings')
@@ -234,7 +243,7 @@ def borrowedbook():
     if len(details)!=0:
         win=Tk()
         win.title('View Books')
-        win.geometry("800x300+270+180")
+        win.geometry("878x702")
         win.resizable(False,False)    
         treeview=Treeview(win,columns=("Student ID","Book ID","Borrow Date","Return Book"),show='headings')
         treeview.heading("Student ID", text="Student ID")
@@ -259,13 +268,15 @@ def borrowedbook():
 def loginadmin():
     if e1.get()=='admin' and e2.get()=='admin':
         admin()
+    else:
+        messagebox.showinfo("Error","Failed to Login")
 
 def admin():
     window.withdraw()
     global win,b1,b2,b3,b4,cur,con
     win=Tk()
     win.title('Admin')
-    win.geometry("400x500+480+180")
+    win.geometry("878x702")
     win.resizable(False,False)
     b1=Button(win, height=2,width=25,text=' Add User ',command=adduser)
     b2=Button(win, height=2,width=25,text=' Add Book ',command=addbook)
@@ -306,7 +317,7 @@ def addbook():
     win.destroy()
     win=Tk()
     win.title('Add Book')
-    win.geometry("400x400+480+180")
+    win.geometry("878x702")
     win.resizable(False,False)
     sub=Label(win,text='TITLE')
     tit=Label(win,text='AUTHOR')
@@ -354,7 +365,7 @@ def addbooks():
 def viewbook():
     win=Tk()
     win.title('View Books')
-    win.geometry("800x300+270+180")
+    win.geometry("878x702")
     win.resizable(False,False)
 
     treeview=Treeview(win,columns=("Title","Author","Genre","Book ID"),show='headings')
@@ -384,7 +395,7 @@ def deletebook():
     win.destroy()
     win=Tk()
     win.title('Delete Book')
-    win.geometry("400x400+480+180")
+    win.geometry("878x702")
     win.resizable(False,False)
     usid=Label(win,text='BOOK ID')
     paswrd=Label(win,text='PASSWORD')
@@ -421,7 +432,7 @@ def adduser():
     win.destroy()
     win=Tk()
     win.title('Add User')
-    win.geometry("400x440+480+180")
+    win.geometry("878x702")
     win.resizable(False,False)
     name=Label(win,text='NAME')
     Ssid=Label(win,text='STUDENT ID')
@@ -474,7 +485,7 @@ def closeusers():
 def viewuser():
     win=Tk()
     win.title('View User')
-    win.geometry("1000x300+270+180")
+    win.geometry("878x702")
     win.resizable(False,False)
     treeview=Treeview(win,columns=("Name","User ID","Password","YearLevel","Course"),show='headings')
     treeview.heading("Name", text="Name")
@@ -588,25 +599,132 @@ def home():
     try:
         global window,b1,b2,e1,e2,con,cur,win
         window=Tk()
-        window.title('Welcome')
+        window.title('Library Management System')
         window.resizable(False,False)
-        window.geometry("400x400+480+180")
-        #wel=Label(window,text='LIBRARY',font='Helvetica 28 bold')
-        #lib=Label(window,text='MANAGEMENT',font='Helvetica 28 bold')
-        usid=Label(window,text='USER ID')
-        paswrd=Label(window,text='PASSWORD')
-        e1=Entry(window,width=22)
-        e2=Entry(window,width=22)
-        b1=Button(window,text=' LOGIN AS STUDENT' ,height=2,width=20,command=loginlibr)
+        window.geometry("878x702")
+
+        #BACKGROUND DISSAPPEARING
+        wel=Label(window,text='LIBRARY',font='Helvetica 28 bold')
+        lib=Label(window,text='MANAGEMENT',font='Helvetica 28 bold')
+        
+        background_image=tk.PhotoImage(file="unknown.png")
+        background_label=tk.Label(image=background_image)
+        background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        background_label.image=background_image 
+        
+        e1=Entry(window, bd=0,bg="#FFFFFF",highlightthickness=0)
+        e2=Entry(window,bd=0,bg="#FFFFFF",highlightthickness=0)
+        b1=Button(window,text=' LOGIN AS STUDENT' ,height=2,width=20,command=loginstd)
         b2=Button(window,text=' LOGIN AS ADMIN ', height=2,width=20,command=loginadmin)
         #wel.place(x=160,y=20)
         #lib.place(x=110,y=70)
-        usid.place(x=70,y=100)
-        paswrd.place(x=70,y=140)
-        e1.place(x=180,y=100)
-        e2.place(x=180,y=140)
-        b1.place(x=175,y=180)
-        b2.place(x=175,y=225)
+        e1.place(x=260.0,y=228.0,width=359.0,height=58.0)
+        e2.place(x=260.0,y=291.0,width=358.0,height=58.0)
+        b1.place(x=251.0,y=400.0,width=375.0,height=71.0)
+        b2.place(x=249.0,y=483.0,width=375.0,height=71.0)
+
+        ###FROM HERE
+
+        #### can't invoke "event ttk::ThemeChanged"####
+        # background_image = PhotoImage(file=relative_to_images("unknown.png"))
+        # background_label=tk.Label(image=background_image)
+        # background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        # background_label.image=background_image
+
+        # canvas = Canvas(window,
+        #     bg = "#000000",
+        #     height = 702,
+        #     width = 878,
+        #     bd = 0,
+        #     highlightthickness = 0,
+        #     relief = "ridge"
+        # )
+
+        # canvas.place(x = 0, y = 0)
+        # canvas.create_rectangle(
+        #     0.0,
+        #     0.0,
+        #     878.0,
+        #     702.0,
+        #     fill="#000000",
+        #     outline="")
+
+        # background_image = PhotoImage(
+        # file=relative_to_images("unknown.png"))
+        # background_label=tk.Label(image=background_image)
+        # background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        # background_label.image=background_image 
+
+        # entry_image_1 = PhotoImage(
+        #     file=relative_to_images("entry_1.png"))
+        # entry_bg_1 = canvas.create_image(
+        #     439.5,
+        #     258.0,
+        #     image=entry_image_1
+        # )
+        # e1 = Entry(
+        #     bd=0,
+        #     bg="#FFFFFF",
+        #     highlightthickness=0
+        # )
+        # e1.place(
+        #     x=260.0,
+        #     y=228.0,
+        #     width=359.0,
+        #     height=58.0
+        # )
+
+        # entry_image_2 = PhotoImage(
+        #     file=relative_to_images("entry_2.png"))
+        # entry_bg_2 = canvas.create_image(
+        #     439.0,
+        #     321.0,
+        #     image=entry_image_2
+        # )
+        # e2 = Entry(
+        #     bd=0,
+        #     bg="#FFFFFF",
+        #     highlightthickness=0
+        # )
+        # e2.place(
+        #     x=260.0,
+        #     y=291.0,
+        #     width=358.0,
+        #     height=58.0
+        # )
+        # button_image_1 = PhotoImage(
+        # file=relative_to_images("button_1.png"))
+        # b1 = Button(
+        #     image=button_image_1,
+        #     borderwidth=0,
+        #     highlightthickness=0,
+        #     command=loginstd,
+        #     relief="flat"
+        # )
+        # b1.place(
+        #     x=251.0,
+        #     y=400.0,
+        #     width=375.0,
+        #     height=71.0
+        # )
+
+        # button_image_2 = PhotoImage(
+        #     file=relative_to_images("button_2.png"))
+        # b2 = Button(
+        #     image=button_image_2,
+        #     borderwidth=0,
+        #     highlightthickness=0,
+        #     command=loginadmin,
+        #     relief="flat"
+        # )
+        # b2.place(
+        #     x=249.0,
+        #     y=483.0,
+        #     width=375.0,
+        #     height=71.0
+        # )
+
+        ###FROM HERE ###
         window.mainloop()
     except Exception:
         window.destroy()
