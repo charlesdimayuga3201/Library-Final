@@ -5,7 +5,7 @@ from tkinter import messagebox
 from tkinter.ttk import Combobox
 from tkinter.ttk import Treeview
 import datetime
-
+from PIL import Image, ImageTk
 from tkinter import Canvas, Entry, Text, Button, PhotoImage
 
 
@@ -33,8 +33,30 @@ def loginstd():
         messagebox.showinfo("Error","Failed to Login")
 
 def stud():
+    
     global window
-    window.withdraw()
+    window.destroy()
+    global win,b1,b2,b3,b4
+    win=Tk()
+    win.title('Library')
+    win.geometry("878x702")
+    win.resizable(False,False)
+    b1=Button(win, height=2,width=25,text=' Borrow Book ',command=borrowbook)
+    b2=Button(win, height=2,width=25,text=' Return Book ',command=returnbook)
+    b3=Button(win, height=2,width=25,text=' View Book ',command=viewbook)
+    b4=Button(win, height=2,width=25,text=' Borrowed Book ',command=borrowedbook)
+    b5=Button(win, height=2,width=25,text=' LogOut ',command=logout)
+    b1.place(x=110,y=40)
+    b2.place(x=110,y=90)
+    b3.place(x=110,y=140)
+    b4.place(x=110,y=190)
+    b5.place(x=110,y=240)
+    
+    win.mainloop()
+
+def stud1():
+    
+    global window
     global win,b1,b2,b3,b4
     win=Tk()
     win.title('Library')
@@ -67,7 +89,7 @@ def addbooks():
 def closebooks():
     global win
     win.destroy()
-    stud()
+    stud1()
 
 def borrowbook():
     global win,sID
@@ -253,8 +275,9 @@ def loginadmin():
     else:
         messagebox.showinfo("Error","Failed to Login")
 
+
 def admin():
-    window.withdraw()
+    window.destroy()
     global win,b1,b2,b3,b4,cur,con
     win=Tk()
     win.title('Admin')
@@ -289,8 +312,45 @@ def admin():
     
     win.mainloop()
 
+def admin1():
+    
+    global win,b1,b2,b3,b4,cur,con
+    win=Tk()
+    win.title('Admin')
+    win.geometry("878x702")
+    win.resizable(False,False)
+
+    background_image=tk.PhotoImage(file="./images/bg_img.png")
+    background_label=tk.Label(image=background_image)
+    background_label.place(x=0, y=0, relwidth=1, relheight=1)
+    background_label.image=background_image 
+
+    b1=Button(win, height=2,width=25,text=' Add User ',command=adduser)
+    b2=Button(win, height=2,width=25,text=' Add Book ',command=addbook)
+    b3=Button(win, height=2,width=25,text=' View User ',command=viewuser)
+    b4=Button(win, height=2,width=25,text=' View Book ',command=viewbook)
+    b5=Button(win, height=2,width=25,text=' Borrowed Book ',command=borrowedbook1)
+    b6=Button(win, height=2,width=25,text=' Delete Book ',command=deletebook)
+    b7=Button(win, height=2,width=25,text=' Delete User ',command=deleteuser)
+
+    # btn8 = tk.PhotoImage(file = "./images/logout_btn.png")
+    # b8=Button(image=btn8, borderwidth=0, highlightthickness=0, command=logout)
+    # b8.image=btn8
+    b8=Button(win, height=2,width=25,text=' LogOut ',command=logout)
+    b1.place(x=110,y=60)
+    b2.place(x=110,y=110)
+    b3.place(x=110,y=160)
+    b4.place(x=110,y=210)
+    b5.place(x=110,y=260)
+    b6.place(x=110,y=310)
+    b7.place(x=110,y=360)
+    b8.place(x=249.0,y=486.0,width=244.0,height=71.0)
+    
+    win.mainloop()
+
+
 def logout():    
-    window.destroy()
+    
     win.destroy()
     try:
         closedb()
@@ -339,7 +399,7 @@ def addbook():
 def closebooks1():
     global win
     win.destroy()
-    admin()
+    admin1()
 
 def addbooks():
     connectdb()
@@ -471,7 +531,7 @@ def addusers():
 def closeusers():
     global win
     win.destroy()
-    admin()
+    admin1()
 
 def viewuser():
     win=Tk()
