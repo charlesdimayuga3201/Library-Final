@@ -1,1 +1,7 @@
-view_img
+b1=Button(win, height=2,width=25,text=' Add User ',command=adduser)
+    b2=Button(win, height=2,width=25,text=' Add Book ',command=addbook)
+    b3=Button(win, height=2,width=25,text=' View User ',command=viewuser)
+    b4=Button(win, height=2,width=25,text=' View Book ',command=viewbook)
+    b5=Button(win, height=2,width=25,text=' Borrowed Book ',command=borrowedbook1)
+    b6=Button(win, height=2,width=25,text=' Delete Book ',command=deletebook)
+    b7=Button(win, height=2,width=25,text=' Delete User ',command=deleteuser)

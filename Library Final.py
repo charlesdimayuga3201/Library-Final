@@ -323,13 +323,13 @@ def admin():
     view_btn.place(x=237,y=238,width=125,height=53)
     view_btn.image=vimg
 
-    # b1=Button(win, height=2,width=25,text=' Add User ',command=adduser)
-    # b2=Button(win, height=2,width=25,text=' Add Book ',command=addbook)
-    # b3=Button(win, height=2,width=25,text=' View User ',command=viewuser)
-    # b4=Button(win, height=2,width=25,text=' View Book ',command=viewbook)
-    # b5=Button(win, height=2,width=25,text=' Borrowed Book ',command=borrowedbook1)
-    # b6=Button(win, height=2,width=25,text=' Delete Book ',command=deletebook)
-    # b7=Button(win, height=2,width=25,text=' Delete User ',command=deleteuser)
+    b1=Button(win, height=2,width=25,text=' Add User ',command=adduser)
+    b2=Button(win, height=2,width=25,text=' Add Book ',command=addbook)
+    b3=Button(win, height=2,width=25,text=' View User ',command=viewuser)
+    b4=Button(win, height=2,width=25,text=' View Book ',command=viewbook)
+    b5=Button(win, height=2,width=25,text=' Borrowed Book ',command=borrowedbook1)
+    b6=Button(win, height=2,width=25,text=' Delete Book ',command=deletebook)
+    b7=Button(win, height=2,width=25,text=' Delete User ',command=deleteuser)
 
     btn8 = tk.PhotoImage(file = "./images/logout_btn.png")
     b8=Button(image=btn8, borderwidth=0, highlightthickness=0, command=logout)
