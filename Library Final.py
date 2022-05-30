@@ -1,6 +1,5 @@
 from tkinter import *
 import tkinter as tk
-from pathlib import Path
 import pymysql as p
 from tkinter import messagebox
 from tkinter.ttk import Combobox
@@ -9,12 +8,6 @@ import datetime
 
 from tkinter import Canvas, Entry, Text, Button, PhotoImage
 
-OUTPUT_PATH = Path(__file__).parent
-images_PATH = OUTPUT_PATH / Path("./images")
-
-
-def relative_to_images(path: str) -> Path:
-    return images_PATH / Path(path)
 
 b1,b2,b3,b4,b5,b6,b7,b8,sID,cur,con,e1,e2,e3,e4,e5,i,ps=None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
 window,win=None,None
@@ -60,39 +53,6 @@ def stud():
     
     win.mainloop()
 
-def addbook():
-    global win
-    win.destroy()
-    win=Tk()
-    win.title('Add Book')
-    win.geometry("878x702")
-    win.resizable(False,False)
-    sub=Label(win,text='TITLE')
-    tit=Label(win,text='AUTHOR')
-    auth=Label(win,text='GENRE')
-    ser=Label(win,text='BOOK ID')
-    global e1,b,b1
-    e1=Entry(win,width=25)
-    global e2
-    e2=Entry(win,width=25)
-    global e3
-    e3=Entry(win,width=25)
-    global e4
-    e4=Entry(win,width=25)
-    b=Button(win, height=2,width=21,text=' ADD BOOK TO DB ',command=addbooks)
-    b1=Button(win, height=2,width=21,text=' CLOSE ',command=closebooks)
-    sub.place(x=70,y=50)
-    tit.place(x=70,y=90)
-    auth.place(x=70,y=130)
-    ser.place(x=70,y=170)
-    e1.place(x=180,y=50)
-    e2.place(x=180,y=90)
-    e3.place(x=180,y=130)
-    e4.place(x=180,y=170)
-    b.place(x=180,y=210)
-    b1.place(x=180,y=252)
-    win.mainloop()
-
 def addbooks():
     connectdb()
     q='INSERT INTO Book VALUE("%s","%s","%s","%i")'
@@ -128,6 +88,8 @@ def borrowbook():
     e1.configure(state = 'disabled')
     global e4
     e4=Entry(win,width=25)
+    
+
     global com1y,com1m,com1d
     com1y=Combobox(win,value=y,width=5)
     com1m=Combobox(win,value=month,width=5)
@@ -156,19 +118,31 @@ def borrowbook():
 
 def borrowbooks():
     connectdb()
-    q='INSERT INTO BookBorrow VALUE("%s","%s","%s","%s")'
-    i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
-    i=i.isoformat()
-    z = " "
-    cur.execute(q%(e1.get(),e4.get(),i,z))
-    con.commit()
-    win.destroy()
-    messagebox.showinfo("Book", "Book Borrowed")
-    closedb()
-    stud()
+    check = "SELECT * FROM Book WHERE bookid=%s"
+    ret = (e4.get(),)
+    cur.execute(check, ret)
+    result = cur.fetchone()
+    
+    if (result != None):
+        messagebox.showinfo("Status", "Already Borrowed!")
+    else:
+        if (result == None):
+            messagebox.showinfo("Status", "Book not found!")
+        else:
+            q='INSERT INTO BookBorrow VALUE("%s","%s","%s","%s")'
+            i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
+            i=i.isoformat()
+            z = " "
+            cur.execute(q%(e1.get(),e4.get(),i,z))
+            con.commit()
+            win.destroy()
+            messagebox.showinfo("Book", "Book Borrowed")
+            closedb()
+            stud()
+        
 def returnbook():
     global win
-    #win.destroy()
+    win.destroy()
     win=Tk()
     win.title('Return Book')
     win.geometry("878x702")
@@ -195,21 +169,29 @@ def returnbook():
 
 def returnbooks():
     connectdb()
-    print (e4.get())
-    a='Update BookBorrow Set returnbook = %s Where bookids = %s '
-    status = "Returned"
-    val = (status,e4.get()) 
-    cur.execute(a,val)
-    con.commit()
+    check = "SELECT * FROM Book WHERE bookid=%s"
+    ret = (e4.get(),)
+    cur.execute(check, ret)
+    result = cur.fetchone()
+    if (result == None):
+        messagebox.showinfo("Status", "Book not found!")
+    else:
+        print (e4.get())
+        a='Update BookBorrow Set returnbook = %s Where bookids = %s '
+        status = "Returned"
+        val = (status,e4.get()) 
+        cur.execute(a,val)
+        con.commit()
+    
+        win.destroy()
+        closedb()
+        stud()
    
-    win.destroy()
-    closedb()
-    stud()
 
 def viewbook():
     win=Tk()
     win.title('View Books')
-    win.geometry("878x702")
+    win.geometry("800x300+270+180")
     win.resizable(False,False)
 
     treeview=Treeview(win,columns=("Title","Author","Genre","Book ID"),show='headings')
@@ -242,8 +224,8 @@ def borrowedbook():
     details=cur.fetchall()
     if len(details)!=0:
         win=Tk()
-        win.title('View Books')
-        win.geometry("878x702")
+        win.title('Borrowed  Books')
+        win.geometry("800x300+270+180")
         win.resizable(False,False)    
         treeview=Treeview(win,columns=("Student ID","Book ID","Borrow Date","Return Book"),show='headings')
         treeview.heading("Student ID", text="Student ID")
@@ -278,6 +260,12 @@ def admin():
     win.title('Admin')
     win.geometry("878x702")
     win.resizable(False,False)
+
+    background_image=tk.PhotoImage(file="./images/bg_img.png")
+    background_label=tk.Label(image=background_image)
+    background_label.place(x=0, y=0, relwidth=1, relheight=1)
+    background_label.image=background_image 
+
     b1=Button(win, height=2,width=25,text=' Add User ',command=adduser)
     b2=Button(win, height=2,width=25,text=' Add Book ',command=addbook)
     b3=Button(win, height=2,width=25,text=' View User ',command=viewuser)
@@ -285,6 +273,10 @@ def admin():
     b5=Button(win, height=2,width=25,text=' Borrowed Book ',command=borrowedbook1)
     b6=Button(win, height=2,width=25,text=' Delete Book ',command=deletebook)
     b7=Button(win, height=2,width=25,text=' Delete User ',command=deleteuser)
+
+    # btn8 = tk.PhotoImage(file = "./images/logout_btn.png")
+    # b8=Button(image=btn8, borderwidth=0, highlightthickness=0, command=logout)
+    # b8.image=btn8
     b8=Button(win, height=2,width=25,text=' LogOut ',command=logout)
     b1.place(x=110,y=60)
     b2.place(x=110,y=110)
@@ -293,13 +285,12 @@ def admin():
     b5.place(x=110,y=260)
     b6.place(x=110,y=310)
     b7.place(x=110,y=360)
-    b8.place(x=110,y=410)
-    
-    
+    b8.place(x=249.0,y=486.0,width=244.0,height=71.0)
     
     win.mainloop()
 
 def logout():    
+    window.destroy()
     win.destroy()
     try:
         closedb()
@@ -332,7 +323,7 @@ def addbook():
     global e4
     e4=Entry(win,width=25)
     b=Button(win, height=2,width=21,text=' ADD BOOK TO DB ',command=addbooks)
-    b1=Button(win, height=2,width=21,text=' CLOSE ',command=admin)
+    b1=Button(win, height=2,width=21,text=' CLOSE ',command=closebooks1)
     sub.place(x=70,y=50)
     tit.place(x=70,y=90)
     auth.place(x=70,y=130)
@@ -365,7 +356,7 @@ def addbooks():
 def viewbook():
     win=Tk()
     win.title('View Books')
-    win.geometry("878x702")
+    win.geometry("800x300+270+180")
     win.resizable(False,False)
 
     treeview=Treeview(win,columns=("Title","Author","Genre","Book ID"),show='headings')
@@ -485,7 +476,7 @@ def closeusers():
 def viewuser():
     win=Tk()
     win.title('View User')
-    win.geometry("878x702")
+    win.geometry("1000x300+270+180")
     win.resizable(False,False)
     treeview=Treeview(win,columns=("Name","User ID","Password","YearLevel","Course"),show='headings')
     treeview.heading("Name", text="Name")
@@ -516,7 +507,7 @@ def borrowedbook1():
     details=cur.fetchall()
     if len(details)!=0:
         win=Tk()
-        win.title('View Books')
+        win.title('Borrowed Books')
         win.geometry("800x300+270+180")
         win.resizable(False,False)    
         treeview=Treeview(win,columns=("Student ID","Book ID","Borrow Date","Return Book"),show='headings')
@@ -564,6 +555,23 @@ def deleteuser():
 
 def deleteusers():
     connectdb()
+    check = "SELECT * FROM Book WHERE bookid=%s"
+    ret = (e1.get(),)
+    cur.execute(check, ret)
+    result = cur.fetchone()
+    if (result == None):
+        messagebox.showinfo("Status", "Book not found!")
+    else:
+        q='INSERT INTO BookBorrow VALUE("%s","%s","%s","%s")'
+        i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
+        i=i.isoformat()
+        z = " "
+        cur.execute(q%(e1.get(),e4.get(),i,z))
+        con.commit()
+        win.destroy()
+        messagebox.showinfo("Book", "Book Borrowed")
+        closedb()
+        stud()
     if e2.get()=='admin':
         q='DELETE FROM Login WHERE userid="%i"'
         cur.execute(q%(int(e1.get())))
@@ -602,131 +610,34 @@ def home():
         window.title('Library Management System')
         window.resizable(False,False)
         window.geometry("878x702")
-
-        #BACKGROUND DISSAPPEARING
-        wel=Label(window,text='LIBRARY',font='Helvetica 28 bold')
-        lib=Label(window,text='MANAGEMENT',font='Helvetica 28 bold')
         
-        background_image=tk.PhotoImage(file="unknown.png")
+        background_image=tk.PhotoImage(file="./images/bg_img.png")
         background_label=tk.Label(image=background_image)
         background_label.place(x=0, y=0, relwidth=1, relheight=1)
         background_label.image=background_image 
         
-        e1=Entry(window, bd=0,bg="#FFFFFF",highlightthickness=0)
-        e2=Entry(window,bd=0,bg="#FFFFFF",highlightthickness=0)
-        b1=Button(window,text=' LOGIN AS STUDENT' ,height=2,width=20,command=loginstd)
-        b2=Button(window,text=' LOGIN AS ADMIN ', height=2,width=20,command=loginadmin)
-        #wel.place(x=160,y=20)
-        #lib.place(x=110,y=70)
+        usid=Label(window,text='User ID', font='Helvetica 12', bg="#F7F6F8")
+        paswrd=Label(window,text='Password',  font='Helvetica 12', bg="#F7F6F8")
+
+        e1=Entry(window, bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
+        e2=Entry(window,bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17', show = "*")
+
+        std_btn_img = tk.PhotoImage(file = "./images/std_img_log.png")
+        b1=Button(image=std_btn_img, borderwidth=0, highlightthickness=0, command=loginstd)
+        admin_btn_img = tk.PhotoImage(file = "./images/admin_img_log.png")
+        b2=Button(image=admin_btn_img, borderwidth=0, highlightthickness=0, command=loginadmin)
+        # b1=Button(window,text=' LOGIN AS STUDENT' ,height=2,width=20,command=loginstd)
+
+        # b2=Button(window,text=' LOGIN AS ADMIN ', height=2,width=20,command=loginadmin)
+        usid.place(x=260,y=200)
+        paswrd.place(x=260,y=293)
         e1.place(x=260.0,y=228.0,width=359.0,height=58.0)
-        e2.place(x=260.0,y=291.0,width=358.0,height=58.0)
-        b1.place(x=251.0,y=400.0,width=375.0,height=71.0)
-        b2.place(x=249.0,y=483.0,width=375.0,height=71.0)
+        e2.place(x=260.0,y=320.0,width=358.0,height=58.0)
+        b1.place(x=251.0,y=410.0,width=375.0,height=71.0)
+        b2.place(x=249.0,y=486.0,width=375.0,height=71.0)
 
-        ###FROM HERE
-
-        #### can't invoke "event ttk::ThemeChanged"####
-        # background_image = PhotoImage(file=relative_to_images("unknown.png"))
-        # background_label=tk.Label(image=background_image)
-        # background_label.place(x=0, y=0, relwidth=1, relheight=1)
-        # background_label.image=background_image
-
-        # canvas = Canvas(window,
-        #     bg = "#000000",
-        #     height = 702,
-        #     width = 878,
-        #     bd = 0,
-        #     highlightthickness = 0,
-        #     relief = "ridge"
-        # )
-
-        # canvas.place(x = 0, y = 0)
-        # canvas.create_rectangle(
-        #     0.0,
-        #     0.0,
-        #     878.0,
-        #     702.0,
-        #     fill="#000000",
-        #     outline="")
-
-        # background_image = PhotoImage(
-        # file=relative_to_images("unknown.png"))
-        # background_label=tk.Label(image=background_image)
-        # background_label.place(x=0, y=0, relwidth=1, relheight=1)
-        # background_label.image=background_image 
-
-        # entry_image_1 = PhotoImage(
-        #     file=relative_to_images("entry_1.png"))
-        # entry_bg_1 = canvas.create_image(
-        #     439.5,
-        #     258.0,
-        #     image=entry_image_1
-        # )
-        # e1 = Entry(
-        #     bd=0,
-        #     bg="#FFFFFF",
-        #     highlightthickness=0
-        # )
-        # e1.place(
-        #     x=260.0,
-        #     y=228.0,
-        #     width=359.0,
-        #     height=58.0
-        # )
-
-        # entry_image_2 = PhotoImage(
-        #     file=relative_to_images("entry_2.png"))
-        # entry_bg_2 = canvas.create_image(
-        #     439.0,
-        #     321.0,
-        #     image=entry_image_2
-        # )
-        # e2 = Entry(
-        #     bd=0,
-        #     bg="#FFFFFF",
-        #     highlightthickness=0
-        # )
-        # e2.place(
-        #     x=260.0,
-        #     y=291.0,
-        #     width=358.0,
-        #     height=58.0
-        # )
-        # button_image_1 = PhotoImage(
-        # file=relative_to_images("button_1.png"))
-        # b1 = Button(
-        #     image=button_image_1,
-        #     borderwidth=0,
-        #     highlightthickness=0,
-        #     command=loginstd,
-        #     relief="flat"
-        # )
-        # b1.place(
-        #     x=251.0,
-        #     y=400.0,
-        #     width=375.0,
-        #     height=71.0
-        # )
-
-        # button_image_2 = PhotoImage(
-        #     file=relative_to_images("button_2.png"))
-        # b2 = Button(
-        #     image=button_image_2,
-        #     borderwidth=0,
-        #     highlightthickness=0,
-        #     command=loginadmin,
-        #     relief="flat"
-        # )
-        # b2.place(
-        #     x=249.0,
-        #     y=483.0,
-        #     width=375.0,
-        #     height=71.0
-        # )
-
-        ###FROM HERE ###
         window.mainloop()
     except Exception:
         window.destroy()
-enter=1
+enter = 1 
 home()
