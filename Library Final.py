@@ -34,12 +34,18 @@ def loginstd():
 
 def stud():
     global window
-    window.withdraw()
+    window.destroy()
     global win,b1,b2,b3,b4
     win=Tk()
     win.title('Library')
     win.geometry("878x702")
     win.resizable(False,False)
+
+    background_image=tk.PhotoImage(file="./images/bg_img.png")
+    background_label=tk.Label(image=background_image)
+    background_label.place(x=0, y=0, relwidth=1, relheight=1)
+    background_label.image=background_image
+    
     b1=Button(win, height=2,width=25,text=' Borrow Book ',command=borrowbook)
     b2=Button(win, height=2,width=25,text=' Return Book ',command=returnbook)
     b3=Button(win, height=2,width=25,text=' View Book ',command=viewbook)
@@ -254,7 +260,7 @@ def loginadmin():
         messagebox.showinfo("Error","Failed to Login")
 
 def admin():
-    window.withdraw()
+    window.destroy()
     global win,b1,b2,b3,b4,cur,con
     win=Tk()
     win.title('Admin')
@@ -274,10 +280,9 @@ def admin():
     b6=Button(win, height=2,width=25,text=' Delete Book ',command=deletebook)
     b7=Button(win, height=2,width=25,text=' Delete User ',command=deleteuser)
 
-    # btn8 = tk.PhotoImage(file = "./images/logout_btn.png")
-    # b8=Button(image=btn8, borderwidth=0, highlightthickness=0, command=logout)
-    # b8.image=btn8
-    b8=Button(win, height=2,width=25,text=' LogOut ',command=logout)
+    btn8 = tk.PhotoImage(file = "./images/logout_btn.png")
+    b8=Button(image=btn8, borderwidth=0, highlightthickness=0, command=logout)
+    # b8=Button(win, height=2,width=25,text=' LogOut ',command=logout)
     b1.place(x=110,y=60)
     b2.place(x=110,y=110)
     b3.place(x=110,y=160)
@@ -290,7 +295,6 @@ def admin():
     win.mainloop()
 
 def logout():    
-    window.destroy()
     win.destroy()
     try:
         closedb()
