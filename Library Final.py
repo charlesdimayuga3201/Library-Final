@@ -281,6 +281,15 @@ def loginadmin():
     else:
         messagebox.showinfo("Error","Failed to Login")
 
+def show_btn_view():
+    btn_adduser = tk.PhotoImage(file = "./images/add_user.png")
+    b1=Button(image=btn_adduser, borderwidth=0, highlightthickness=0, command=adduser)
+    b1.place(x=237,y=293,width=125,height=53)
+    b1.image=btn_adduser
+    btn_addbook = tk.PhotoImage(file = "./images/add_book.png")
+    b2=Button(image=btn_addbook, borderwidth=0, highlightthickness=0, command=addbook)
+    b2.place(x=236,y=348,width=125,height=53)
+    b2.image=btn_addbook
 
 def admin():
     window.destroy()
@@ -295,25 +304,30 @@ def admin():
     background_label.place(x=0, y=0, relwidth=1, relheight=1)
     background_label.image=background_image 
 
-    b1=Button(win, height=2,width=25,text=' Add User ',command=adduser)
-    b2=Button(win, height=2,width=25,text=' Add Book ',command=addbook)
-    b3=Button(win, height=2,width=25,text=' View User ',command=viewuser)
-    b4=Button(win, height=2,width=25,text=' View Book ',command=viewbook)
-    b5=Button(win, height=2,width=25,text=' Borrowed Book ',command=borrowedbook1)
-    b6=Button(win, height=2,width=25,text=' Delete Book ',command=deletebook)
-    b7=Button(win, height=2,width=25,text=' Delete User ',command=deleteuser)
+    vimg = tk.PhotoImage(file = "./images/view_img.png")
+    view_btn=Button(image=vimg, borderwidth=0, highlightthickness=0, command=show_btn_view)
+    view_btn.place(x=237,y=238,width=125,height=53)
+    view_btn.image=vimg
+
+    # b1=Button(win, height=2,width=25,text=' Add User ',command=adduser)
+    # b2=Button(win, height=2,width=25,text=' Add Book ',command=addbook)
+    # b3=Button(win, height=2,width=25,text=' View User ',command=viewuser)
+    # b4=Button(win, height=2,width=25,text=' View Book ',command=viewbook)
+    # b5=Button(win, height=2,width=25,text=' Borrowed Book ',command=borrowedbook1)
+    # b6=Button(win, height=2,width=25,text=' Delete Book ',command=deletebook)
+    # b7=Button(win, height=2,width=25,text=' Delete User ',command=deleteuser)
 
     btn8 = tk.PhotoImage(file = "./images/logout_btn.png")
     b8=Button(image=btn8, borderwidth=0, highlightthickness=0, command=logout)
     # b8=Button(win, height=2,width=25,text=' LogOut ',command=logout)
-    b1.place(x=110,y=60)
-    b2.place(x=110,y=110)
-    b3.place(x=110,y=160)
-    b4.place(x=110,y=210)
-    b5.place(x=110,y=260)
-    b6.place(x=110,y=310)
-    b7.place(x=110,y=360)
-    b8.place(x=249.0,y=486.0,width=244.0,height=71.0)
+    # b1.place(x=40,y=60)
+    # b2.place(x=40,y=110)
+    # b3.place(x=40,y=160)
+    # b4.place(x=40,y=210)
+    # b5.place(x=40,y=260)
+    # b6.place(x=40,y=310)
+    # b7.place(x=110,y=360)
+    b8.place(x=317.0,y=475.0,width=244.0,height=71.0)
     
     win.mainloop()
 
@@ -330,25 +344,29 @@ def admin1():
     background_label.place(x=0, y=0, relwidth=1, relheight=1)
     background_label.image=background_image 
 
-    b1=Button(win, height=2,width=25,text=' Add User ',command=adduser)
-    b2=Button(win, height=2,width=25,text=' Add Book ',command=addbook)
-    b3=Button(win, height=2,width=25,text=' View User ',command=viewuser)
-    b4=Button(win, height=2,width=25,text=' View Book ',command=viewbook)
-    b5=Button(win, height=2,width=25,text=' Borrowed Book ',command=borrowedbook1)
-    b6=Button(win, height=2,width=25,text=' Delete Book ',command=deletebook)
-    b7=Button(win, height=2,width=25,text=' Delete User ',command=deleteuser)
+    vimg = tk.PhotoImage(file = "./images/view_img.png")
+    view_btn=Button(image=vimg, borderwidth=0, highlightthickness=0, command=show_btn_view)
+    view_btn.place(x=237,y=238,width=125,height=53)
+    view_btn.image=vimg
+    # b1=Button(win, height=2,width=25,text=' Add User ',command=adduser)
+    # b2=Button(win, height=2,width=25,text=' Add Book ',command=addbook)
+    # b3=Button(win, height=2,width=25,text=' View User ',command=viewuser)
+    # b4=Button(win, height=2,width=25,text=' View Book ',command=viewbook)
+    # b5=Button(win, height=2,width=25,text=' Borrowed Book ',command=borrowedbook1)
+    # b6=Button(win, height=2,width=25,text=' Delete Book ',command=deletebook)
+    # b7=Button(win, height=2,width=25,text=' Delete User ',command=deleteuser)
 
-    # btn8 = tk.PhotoImage(file = "./images/logout_btn.png")
-    # b8=Button(image=btn8, borderwidth=0, highlightthickness=0, command=logout)
-    # b8.image=btn8
-    b8=Button(win, height=2,width=25,text=' LogOut ',command=logout)
-    b1.place(x=110,y=60)
-    b2.place(x=110,y=110)
-    b3.place(x=110,y=160)
-    b4.place(x=110,y=210)
-    b5.place(x=110,y=260)
-    b6.place(x=110,y=310)
-    b7.place(x=110,y=360)
+    btn8 = tk.PhotoImage(file = "./images/logout_btn.png")
+    b8=Button(image=btn8, borderwidth=0, highlightthickness=0, command=logout)
+    b8.image=btn8
+    # b8=Button(win, height=2,width=25,text=' LogOut ',command=logout)
+    # b1.place(x=110,y=60)
+    # b2.place(x=110,y=110)
+    # b3.place(x=110,y=160)
+    # b4.place(x=110,y=210)
+    # b5.place(x=110,y=260)
+    # b6.place(x=110,y=310)
+    # b7.place(x=110,y=360)
     b8.place(x=249.0,y=486.0,width=244.0,height=71.0)
     
     win.mainloop()
@@ -375,6 +393,12 @@ def addbook():
     win.title('Add Book')
     win.geometry("878x702")
     win.resizable(False,False)
+
+    background_image=tk.PhotoImage(file="./images/bg_img.png")
+    background_label=tk.Label(image=background_image)
+    background_label.place(x=0, y=0, relwidth=1, relheight=1)
+    background_label.image=background_image
+
     sub=Label(win,text='TITLE')
     tit=Label(win,text='AUTHOR')
     auth=Label(win,text='GENRE')
@@ -453,6 +477,12 @@ def deletebook():
     win.title('Delete Book')
     win.geometry("878x702")
     win.resizable(False,False)
+
+    background_image=tk.PhotoImage(file="./images/bg_img.png")
+    background_label=tk.Label(image=background_image)
+    background_label.place(x=0, y=0, relwidth=1, relheight=1)
+    background_label.image=background_image
+
     usid=Label(win,text='BOOK ID')
     paswrd=Label(win,text='PASSWORD')
     global e1
@@ -490,6 +520,12 @@ def adduser():
     win.title('Add User')
     win.geometry("878x702")
     win.resizable(False,False)
+
+    background_image=tk.PhotoImage(file="./images/bg_img.png")
+    background_label=tk.Label(image=background_image)
+    background_label.place(x=0, y=0, relwidth=1, relheight=1)
+    background_label.image=background_image 
+
     name=Label(win,text='NAME')
     Ssid=Label(win,text='STUDENT ID')
     spass=Label(win,text='PASSWORD')
@@ -600,8 +636,14 @@ def deleteuser():
     win.destroy()
     win=Tk()
     win.title('Delete user')
-    win.geometry("400x400+480+180")
+    win.geometry("878x702")
     win.resizable(False,False)
+
+    background_image=tk.PhotoImage(file="./images/bg_img.png")
+    background_label=tk.Label(image=background_image)
+    background_label.place(x=0, y=0, relwidth=1, relheight=1)
+    background_label.image=background_image
+    
     usid=Label(win,text='USER ID')
     paswrd=Label(win,text='ADMIN \n PASSWORD')
     global e1
