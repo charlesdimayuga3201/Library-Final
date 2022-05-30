@@ -55,8 +55,8 @@ def stud():
     win.mainloop()
 
 def stud1():
+
     
-    global window
     global win,b1,b2,b3,b4
     win=Tk()
     win.title('Library')
@@ -81,16 +81,18 @@ def stud1():
     
     win.mainloop()
 
+   
+
 def addbooks():
     connectdb()
     q='INSERT INTO Book VALUE("%s","%s","%s","%i")'
     global cur,con
     cur.execute(q%(e1.get(),e2.get(),e3.get(),int(e4.get())))
     con.commit()
-    win.destroy()
     messagebox.showinfo("Book", "Book Added")
     closedb()
-    stud()
+    win.destroy()
+    stud1()
 
 def closebooks():
     global win
@@ -146,28 +148,31 @@ def borrowbook():
 
 def borrowbooks():
     connectdb()
+   
     check = "SELECT * FROM Book WHERE bookid=%s"
     ret = (e4.get(),)
     cur.execute(check, ret)
     result = cur.fetchone()
-    
-    if (result != None):
-        messagebox.showinfo("Status", "Already Borrowed!")
+   
+    if (result == None):
+        messagebox.showinfo("Status", "Book not found!")
     else:
-        if (result == None):
-            messagebox.showinfo("Status", "Book not found!")
-        else:
-            q='INSERT INTO BookBorrow VALUE("%s","%s","%s","%s")'
-            i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
-            i=i.isoformat()
-            z = " "
-            cur.execute(q%(e1.get(),e4.get(),i,z))
-            con.commit()
-            win.destroy()
-            messagebox.showinfo("Book", "Book Borrowed")
-            closedb()
-            stud()
-        
+        q='INSERT INTO BookBorrow VALUE("%s","%s","%s","%s")'
+        stats_borrow = 'Update Book Set status = %s Where bookid = %s'
+        stats_b = "Not Available"
+        for_book=(stats_b, e4.get())
+        cur.execute(stats_borrow,for_book)
+        con.commit()
+        i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
+        i=i.isoformat()
+        z = " "
+        cur.execute(q%(e1.get(),e4.get(),i,z))
+        con.commit()
+        messagebox.showinfo("Book", "Book Borrowed")
+        closedb()
+        win.destroy()
+        stud1()
+    
 def returnbook():
     global win
     win.destroy()
@@ -205,32 +210,41 @@ def returnbooks():
         messagebox.showinfo("Status", "Book not found!")
     else:
         print (e4.get())
+        r_book = 'Update Book set status = %s Where bookid = %s'
+        s_book = "Available"
+        o_result = (s_book, e4.get())
+        cur.execute(r_book,o_result)
+        con.commit()
+    
         a='Update BookBorrow Set returnbook = %s Where bookids = %s '
         status = "Returned"
         val = (status,e4.get()) 
         cur.execute(a,val)
         con.commit()
     
-        win.destroy()
+        
         closedb()
-        stud()
+        win.destroy()
+        stud1()
    
 
 def viewbook():
     win=Tk()
     win.title('View Books')
-    win.geometry("800x300+270+180")
+    win.geometry("1000x300+270+180")
     win.resizable(False,False)
 
-    treeview=Treeview(win,columns=("Title","Author","Genre","Book ID"),show='headings')
+    treeview=Treeview(win,columns=("Title","Author","Genre","Book ID","Status"),show='headings')
     treeview.heading("Title", text="Title")
     treeview.heading("Author", text="Author")
     treeview.heading("Genre", text="Genre")
     treeview.heading("Book ID", text="Book ID")
+    treeview.heading("Status", text="Status")
     treeview.column("Title", anchor='center')
     treeview.column("Author", anchor='center')
     treeview.column("Genre", anchor='center')
     treeview.column("Book ID", anchor='center')
+    treeview.column("Status", anchor='center')
     index=0
     iid=0
     connectdb()
@@ -432,31 +446,35 @@ def closebooks1():
 
 def addbooks():
     connectdb()
-    q='INSERT INTO Book VALUE("%s","%s","%s","%i")'
+    q='INSERT INTO Book VALUE("%s","%s","%s","%i","%s")'
     global cur,con
-    cur.execute(q%(e1.get(),e2.get(),e3.get(),int(e4.get())))
+    stats = "Available"
+    cur.execute(q%(e1.get(),e2.get(),e3.get(),int(e4.get()),stats))
     con.commit()
-    win.destroy()
+   
     messagebox.showinfo("Book", "Book Added")
     closedb()
-    admin()
+    win.destroy()
+    admin1()
 
 
 def viewbook():
     win=Tk()
     win.title('View Books')
-    win.geometry("800x300+270+180")
-    win.resizable(False,False)
+    win.geometry("1000x300+270+180")
+    
 
-    treeview=Treeview(win,columns=("Title","Author","Genre","Book ID"),show='headings')
+    treeview=Treeview(win,columns=("Title","Author","Genre","Book ID","Status"),show='headings')
     treeview.heading("Title", text="Title")
     treeview.heading("Author", text="Author")
     treeview.heading("Genre", text="Genre")
     treeview.heading("Book ID", text="Book ID")
+    treeview.heading("Status", text="Status")
     treeview.column("Title", anchor='center')
     treeview.column("Author", anchor='center')
     treeview.column("Genre", anchor='center')
     treeview.column("Book ID", anchor='center')
+    treeview.column("Status", anchor='center')
     index=0
     iid=0
     connectdb()
@@ -501,17 +519,28 @@ def deletebook():
 
 def deletebooks():
     connectdb()
-    if e2.get()=='admin':
-        q='DELETE FROM Book WHERE bookid="%i"'
-        cur.execute(q%(int(e1.get())))
-        con.commit()
-        win.destroy()
-        messagebox.showinfo("Delete", "Book Deleted")
-        closedb()
-        admin()
+
+    
+
+    bk = 'SELECT * FROM Book WHERE bookid= %s'
+    s_book = (e1.get(),)
+    cur.execute(bk,s_book)
+    d_book =cur.fetchone()
+    if(d_book == None):
+        messagebox.showinfo("Status", "Invalid Book ID!")
     else:
-        messagebox.showinfo("Error", "Incorrect Password")
-        closedb()
+        if e2.get()=='admin':
+            q='DELETE FROM Book WHERE bookid="%i"'
+            cur.execute(q%(int(e1.get())))
+            con.commit()
+            
+            messagebox.showinfo("Delete", "Book Deleted")
+            closedb()
+            win.destroy()
+            admin1()
+        else:
+            messagebox.showinfo("Error", "Incorrect Password")
+            closedb()
 
 def adduser():
     global win
@@ -560,14 +589,24 @@ def adduser():
 
 def addusers():
     connectdb()
-    q='INSERT INTO Login VALUE("%s","%i","%s","%s","%s")'
     global con,cur
-    cur.execute(q%(e1.get(),int(e2.get()),e3.get(),e4.get(),e5.get()))
-    con.commit()
-    win.destroy()
-    messagebox.showinfo("User", "User Added")
-    closedb()
-    admin()
+    us1 = "SELECT * FROM Login where userid = %s"
+    ck = (e2.get(),)
+    cur.execute(us1,ck)
+    done = cur.fetchone()
+    if(done != None):
+         messagebox.showinfo("Status", "Student ID Exist!")
+
+    else:
+        q='INSERT INTO Login VALUE("%s","%i","%s","%s","%s")'
+        
+        cur.execute(q%(e1.get(),int(e2.get()),e3.get(),e4.get(),e5.get()))
+        con.commit()
+       
+        messagebox.showinfo("User", "User Added")
+        closedb()
+        win.destroy()
+        admin1()
 
 def closeusers():
     global win
@@ -662,34 +701,25 @@ def deleteuser():
 
 def deleteusers():
     connectdb()
-    check = "SELECT * FROM Book WHERE bookid=%s"
+    check = "SELECT * FROM Login WHERE userid=%s"
     ret = (e1.get(),)
     cur.execute(check, ret)
     result = cur.fetchone()
     if (result == None):
-        messagebox.showinfo("Status", "Book not found!")
+         messagebox.showinfo("Status", "User Not Found!")
     else:
-        q='INSERT INTO BookBorrow VALUE("%s","%s","%s","%s")'
-        i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
-        i=i.isoformat()
-        z = " "
-        cur.execute(q%(e1.get(),e4.get(),i,z))
-        con.commit()
-        win.destroy()
-        messagebox.showinfo("Book", "Book Borrowed")
-        closedb()
-        stud()
-    if e2.get()=='admin':
-        q='DELETE FROM Login WHERE userid="%i"'
-        cur.execute(q%(int(e1.get())))
-        con.commit()
-        win.destroy()
-        messagebox.showinfo("Delete", "User Deleted")
-        closedb()
-        admin()
-    else:
-        messagebox.showinfo("Error", "Incorrect Password")
-        closedb()
+        if e2.get()=='admin':
+            q='DELETE FROM Login WHERE userid="%i"'
+            cur.execute(q%(int(e1.get())))
+            con.commit()
+            
+            messagebox.showinfo("Delete", "User Deleted")
+            closedb()
+            win.destroy()
+            admin1()
+        else:
+            messagebox.showinfo("Error", "Incorrect Password")
+            closedb()
 
 def connectdb():
     global con,cur
@@ -701,7 +731,7 @@ def connectdb():
     global enter
     if enter==1:
         l='CREATE TABLE IF NOT EXISTS Login(name varchar(50),userid varchar(10),password varchar(30),yearlevel varchar(20),course varchar(20))'
-        b='CREATE TABLE IF NOT EXISTS Book(title varchar(50),author varchar(50),genre varchar(50),bookid int(15))'
+        b='CREATE TABLE IF NOT EXISTS Book(title varchar(50),author varchar(50),genre varchar(50),bookid int(15),status varchar(20))'
         i='CREATE TABLE IF NOT EXISTS BookBorrow(stdid varchar(50),bookids varchar(50),borrow date,returnbook varchar(20))'
         cur.execute(l)
         cur.execute(b)
