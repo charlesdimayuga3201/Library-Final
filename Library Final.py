@@ -79,6 +79,9 @@ def stud1():
 
 def addbooks():
     connectdb()
+
+    
+
     q='INSERT INTO Book VALUE("%s","%s","%s","%i")'
     global cur,con
     cur.execute(q%(e1.get(),e2.get(),e3.get(),int(e4.get())))
