@@ -13,6 +13,7 @@ b1,b2,b3,b4,b5,b6,b7,b8,sID,cur,con,e1,e2,e3,e4,e5,i,ps=None,None,None,None,None
 window,win=None,None
 com1d,com1m,com1y,com2d,com2m,com2y=None,None,None,None,None,None
 
+#added this line
 
 month=['January','February','March','April','May','June','July','August','September','October','November','December']
 y = list(range(2020, 2040))
