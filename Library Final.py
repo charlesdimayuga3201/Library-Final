@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from tkinter import *
 import tkinter as tk
 import pymysql as p
@@ -57,8 +58,16 @@ def stud():
     global win,b1,b2,b3,b4
     win=Tk()
     win.title('Library')
-    win.geometry("878x702")
     win.resizable(False,False)
+
+    global screen_height, screen_width, x_cordinate, y_cordinate
+    window_width = 878
+    window_height = 702
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    win.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
 
     bg_image=tk.PhotoImage(file="./images/bg_img.png")
     bg_label=tk.Label(image=bg_image)
@@ -81,8 +90,16 @@ def stud1():
     global win,b1,b2,b3,b4
     win=Tk()
     win.title('Library')
-    win.geometry("878x702")
     win.resizable(False,False)
+
+    global screen_height, screen_width, x_cordinate, y_cordinate
+    window_width = 878
+    window_height = 702
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    win.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
 
     bg_image=tk.PhotoImage(file="./images/bg_img.png")
     bg_label=tk.Label(image=bg_image)
@@ -110,10 +127,18 @@ def borrowbook():
     global win,sID
     win.destroy()
     win=Tk()
-    win.title('BORROW Book')
-    win.geometry("878x702")
+    win.title('Borrow Book')
     win.resizable(False,False)
     
+    global screen_height, screen_width, x_cordinate, y_cordinate
+    window_width = 878
+    window_height = 702
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    win.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
+
     bg_image=tk.PhotoImage(file="./images/bg_img.png")
     bg_label=tk.Label(image=bg_image)
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
@@ -133,28 +158,17 @@ def borrowbook():
     e1.insert(0, sID)
     e1.configure(state = 'disabled')
 
+
     e2=Entry(win,bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
     e2.place(x=447.0,y=255.0,width=194.0,height=50.0)
 
-    retbook_btn = tk.PhotoImage(file = "./images/book_borrowbtn.png")
-    b1=Button(image=retbook_btn, borderwidth=0, highlightthickness=0, command=borrowbooks)
+    brw_bookbtn = tk.PhotoImage(file = "./images/book_borrowbtn.png")
+    b1=Button(image=brw_bookbtn, borderwidth=0, highlightthickness=0, command=borrowbooks)
     b1.place(x=230.0,y=494.0,width=194.0,height=71.0)
 
     close_bookbtn = tk.PhotoImage(file = "./images/close_btn.png")
     b2=Button(image=close_bookbtn, borderwidth=0, highlightthickness=0, command=closebooks)
     b2.place(x=447.0,y=494.0,width=194.0,height=71.0)
-
-    # name=Label(win,text='BORROW ',font='Helvetica 30 bold')
-
-    # sid=Label(win,text='Student ID')
-    # no=Label(win,text='BOOK NO')
-    # borrow=Label(win,text='BORROW DATE')
-    # global e1,b,b1
-    # e1=Entry(win,width=25)
-    # e1.insert(0, sID)
-    # e1.configure(state = 'disabled')
-    # global e4
-    # e4=Entry(win,width=25)
     
     global com1y,com1m,com1d
     com1y=Combobox(win,value=y, font='Helvetica 14')
@@ -167,67 +181,94 @@ def borrowbook():
     com1y.place(x=230,y=346,width=80.0,height=50.0)
     com1m.place(x=310,y=346,width=130.0,height=50.0)
     com1d.place(x=440,y=346,width=60.0,height=50.0)
-    
-    # b=Button(win, height=2,width=21,text=' BORROW BOOK ',command=borrowbooks)
-    # b1=Button(win, height=2,width=21,text=' CLOSE ',command=closebooks)
-    # name.place(x=55,y=30)
-    # sid.place(x=70,y=130)
-    # no.place(x=70,y=170)
-    # borrow.place(x=70,y=210)
-    # e1.place(x=180,y=130)
-    # e4.place(x=180,y=170)
-    
-    # b.place(x=178,y=270)
-    # b1.place(x=178,y=312)
     win.mainloop()
 
 def borrowbooks():
     connectdb()
-   
-    check = "SELECT * FROM Book WHERE bookid=%s"
-    ret = (e1.get(),)
-    cur.execute(check, ret)
-    result = cur.fetchone()
-   
-    if (result == None):
-        messagebox.showinfo("Status", "Book not found!")
-    else:
-        q='INSERT INTO BookBorrow VALUE("%s","%s","%s","%s")'
-        stats_borrow = 'Update Book Set status = %s Where bookid = %s'
-        stats_b = "Not Available"
-        for_book=(stats_b, e2.get())
-        cur.execute(stats_borrow,for_book)
-        con.commit()
-        i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
-        i=i.isoformat()
-        z = " "
-        cur.execute(q%(e1.get(),e2.get(),i,z))
-        con.commit()
-        messagebox.showinfo("Success", "Book Borrowed!")
-        closedb()
-        win.destroy()
-        stud1()
     
+    if (e2.get() != ""):
+
+        print (e2.get())
+        check1 = "SELECT status FROM Book WHERE bookid=%s"
+        ret1 = (e2.get(),)
+        cur.execute(check1, ret1)
+        result = cur.fetchone()
+        if(result != None):    
+            if(result[0] == 'Not Available'):
+                messagebox.showinfo("Failed", "Book Already Borrowed!")
+
+            else: 
+                
+                stats_borrow = 'UPDATE Book Set status = %s Where bookid = %s'
+                stats_b = "Not Available"
+                
+                for_book=(stats_b, e2.get())
+                cur.execute(stats_borrow,for_book)
+                con.commit()
+
+                q='INSERT INTO BookBorrow(stdid,bookids,borrow,return_borrow)VALUE("%s","%s","%s",NULL)'
+                i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
+                i=i.isoformat()
+              
+                cur.execute(q%(e1.get(),e2.get(),i))
+                con.commit()
+                messagebox.showinfo("Success", "Book Borrowed!")
+                closedb()
+                win.destroy()
+                stud1()
+        else:
+            messagebox.showinfo("Error", "No Book Found!")
+    else: 
+         messagebox.showinfo("Error", "No Input!")
 def returnbook():
-    global win
+    global win,sID
     win.destroy()
     win=Tk()
     win.title('Return Book')
-    win.geometry("878x702")
     win.resizable(False,False)
+
+    global screen_height, screen_width, x_cordinate, y_cordinate
+    window_width = 878
+    window_height = 702
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    win.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
+
     bg_image=tk.PhotoImage(file="./images/bg_img.png")
     bg_label=tk.Label(image=bg_image)
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
     bg_label.image=bg_image
 
-    global e1,b1
-
-    bookid_lbl=Label(win,text='Book ID', font='Helvetica 12', bg="#F7F6F8")
-    bookid_lbl.place(x=230,y=227)
+    global e1,e2,b1
+    studid_lbl=Label(win,text='Student ID', font='Helvetica 12', bg="#F7F6F8")
+    studid_lbl.place(x=230,y=227)
+    bookid_lbl=Label(win,text='Book Key',  font='Helvetica 12', bg="#F7F6F8")
+    bookid_lbl.place(x=448,y=227)
+    borrowdate_lbl=Label(win,text='Return date',  font='Helvetica 12', bg="#F7F6F8")
+    borrowdate_lbl.place(x=230,y=318)
 
     e1=Entry(win, bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
     e1.place(x=230.0,y=255.0,width=194.0,height=50.0)
+    e1.insert(0, sID)
+    e1.configure(state = 'disabled')
 
+    e2=Entry(win, bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
+    e2.place(x=447.0,y=255.0,width=194.0,height=50.0)
+
+    global com1y,com1m,com1d
+    com1y=Combobox(win,value=y, font='Helvetica 14')
+    com1m=Combobox(win,value=month, font='Helvetica 14')
+    com1d=Combobox(win,value=d, font='Helvetica 14')
+    now=datetime.datetime.now()
+    com1y.set(now.year)
+    com1m.set(month[now.month-1])
+    com1d.set(now.day)
+    com1y.place(x=230,y=346,width=80.0,height=50.0)
+    com1m.place(x=310,y=346,width=130.0,height=50.0)
+    com1d.place(x=440,y=346,width=60.0,height=50.0)
+    
     retbook_btn = tk.PhotoImage(file = "./images/book_returnbtn.png")
     b1=Button(image=retbook_btn, borderwidth=0, highlightthickness=0, command=returnbooks)
     b1.place(x=230.0,y=494.0,width=194.0,height=71.0)
@@ -236,80 +277,97 @@ def returnbook():
     b2=Button(image=close_bookbtn, borderwidth=0, highlightthickness=0, command=closebooks)
     b2.place(x=447.0,y=494.0,width=194.0,height=71.0)
 
-    # ret=Label(win,text='RETURN ',font='Helvetica 30 bold')
-    # book=Label(win,text='BOOK',font='Helvetica 30 bold')
-    # no=Label(win,text='BOOK NO')
-    # exp=Label(win,text='')
-    # global b,b1
-    # global e4
-    # e4=Entry(win,width=25)
-
-    # b=Button(win, height=2,width=21,text=' RETURN BOOK ',command=returnbooks)
-    # b1=Button(win, height=2,width=21,text=' CLOSE ',command=closebooks)
-    # ret.place(x=55,y=30)
-    # book.place(x=225,y=30)
-    # no.place(x=70,y=120)
-    # exp.place(x=70,y=200)
-    # e4.place(x=180,y=120)
-    # b.place(x=178,y=200)
-    # b1.place(x=178,y=242)
+    
     win.mainloop()
 
 def returnbooks():
     connectdb()
-    check = "SELECT * FROM Book WHERE bookid=%s"
-    ret = (e1.get(),)
-    cur.execute(check, ret)
-    result = cur.fetchone()
-    if (result == None):
-        messagebox.showinfo("Result", "Book not found!")
+    if (e2.get() != ""):
+        n_var = 'SELECT bookids FROM BookBorrow WHERE borrowkey=%s'
+        n_val = (e2.get(),)
+        cur.execute(n_var,n_val)
+        n_result = cur.fetchone()
+        
+        if(n_result != None):
+            print (e2.get())
+            check1 = "SELECT status FROM Book WHERE bookid=%s"
+            ret1 = (n_result[0],)
+            cur.execute(check1, ret1)
+            result = cur.fetchone()
+            if(result != None):    
+                if(result[0] == 'Not Available'):
+                    check = "SELECT * FROM Book WHERE bookid=%s"
+                    ret = (ret1)
+                    cur.execute(check, ret)
+                    result = cur.fetchone()
+                    if (result == None):
+                        messagebox.showinfo("Result", "Book not found!")
+                    else:
+                        print (e2.get())
+                        r_book = 'UPDATE Book SET status = %s Where bookid = %s'
+                        s_book = "Available"
+                        o_result = (s_book, n_result[0])
+                        cur.execute(r_book,o_result)
+                        con.commit()
+                        
+                        
+                        a='UPDATE BookBorrow SET return_borrow = %s Where  borrowkey = %s'
+                        i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
+                        i=i.isoformat()
+                        stats_ret = i 
+                        val = (stats_ret,e2.get()) 
+                        
+                        cur.execute(a,val)
+                        con.commit()
+                    
+                        messagebox.showinfo("Success", "Book Returned!")
+                        closedb()
+                        win.destroy()
+                        stud1()
+
+                else: 
+                    messagebox.showinfo("Success", "You Already Returned!")
+            else:
+                messagebox.showinfo("Result", "Book not found!")
+    
+        else:
+            messagebox.showinfo("Error", "Borrow Key Not Found!")
     else:
-        print (e1.get())
-        r_book = 'Update Book set status = %s Where bookid = %s'
-        s_book = "Available"
-        o_result = (s_book, e1.get())
-        cur.execute(r_book,o_result)
-        con.commit()
+        messagebox.showinfo("Erro", "No Input!")
     
-        a='Update BookBorrow Set returnbook = %s Where bookids = %s '
-        status = "Returned"
-        val = (status,e1.get()) 
-        cur.execute(a,val)
-        con.commit()
-    
-        messagebox.showinfo("Success", "Book Returned!")
-        closedb()
-        win.destroy()
-        stud1()
 
 def viewbook():
-    win=Tk()
-    win.title('View Books')
-    win.geometry("1000x300+270+180")
-    win.resizable(False,False)
-
-    treeview=Treeview(win,columns=("Book ID","Title","Author","Genre","Status"),show='headings')
-    treeview.heading("Book ID", text="Book ID")
-    treeview.heading("Title", text="Title")
-    treeview.heading("Author", text="Author")
-    treeview.heading("Genre", text="Genre")
-    treeview.heading("Status", text="Status")
-    treeview.column("Book ID", anchor='center')
-    treeview.column("Title", anchor='center')
-    treeview.column("Author", anchor='center')
-    treeview.column("Genre", anchor='center')
-    treeview.column("Status", anchor='center')
-    index=0
-    iid=0
     connectdb()
     q='SELECT * FROM Book'
     cur.execute(q)
     details=cur.fetchall()
-    for row in details:
-        treeview.insert("",index,iid,value=row)
-        index=iid=index+1
-    treeview.pack()
-    win.mainloop()
+    if len(details)!=0:
+        win=Tk()
+        win.title('View Books')
+        win.geometry("1000x300+270+180")
+        win.resizable(False,False)
+
+        treeview=Treeview(win,columns=("Book ID","Title","Author","Genre","Status"),show='headings')
+        treeview.heading("Book ID", text="Book ID")
+        treeview.heading("Title", text="Title")
+        treeview.heading("Author", text="Author")
+        treeview.heading("Genre", text="Genre")
+        treeview.heading("Status", text="Status")
+        treeview.column("Book ID", anchor='center')
+        treeview.column("Title", anchor='center')
+        treeview.column("Author", anchor='center')
+        treeview.column("Genre", anchor='center')
+        treeview.column("Status", anchor='center')
+        index=0
+        iid=0
+
+        for row in details:
+            treeview.insert("",index,iid,value=row)
+            index=iid=index+1
+        treeview.pack()
+        win.mainloop()
+    else:
+        messagebox.showinfo("Message","No Book lists!")
     closedb()
 
 def borrowedbook():
@@ -321,17 +379,19 @@ def borrowedbook():
     if len(details)!=0:
         win=Tk()
         win.title('Borrowed  Books')
-        win.geometry("800x300+270+180")
+        win.geometry("1000x300+270+180")
         win.resizable(False,False)    
-        treeview=Treeview(win,columns=("Student ID","Book ID","Borrow Date","Return Book"),show='headings')
+        treeview=Treeview(win,columns=("Book Key","Student ID","Book ID","Borrow Date","Return Date"),show='headings')
+        treeview.heading("Book Key", text="Book Key")
         treeview.heading("Student ID", text="Student ID")
         treeview.heading("Book ID", text="Book ID")
         treeview.heading("Borrow Date", text="Borrow Date")
-        treeview.heading("Return Book", text="Return Book")
+        treeview.heading("Return Date", text="Return Date")
+        treeview.column("Book Key", anchor='center')
         treeview.column("Student ID", anchor='center')
         treeview.column("Book ID", anchor='center')
         treeview.column("Borrow Date", anchor='center')
-        treeview.column("Return Book", anchor='center')
+        treeview.column("Return Date", anchor='center')
         index=0
         iid=0
         for row in details:
@@ -350,15 +410,20 @@ def loginadmin():
         messagebox.showinfo("Error","Failed to Login!")
 
 def show_btn_del():
-    btn_delstud = tk.PhotoImage(file = "./images/del_stud.png")
+    btn_delstud = tk.PhotoImage(file = "./images/delete_stud.png")
     b6=Button(image=btn_delstud, borderwidth=0, highlightthickness=0, command=delete_student)
     b6.place(x=513,y=293,width=125,height=53)
     b6.image=btn_delstud
     
-    btn_delbook = tk.PhotoImage(file = "./images/del_book.png")
+    btn_delbook = tk.PhotoImage(file = "./images/delete_book.png")
     b7=Button(image=btn_delbook, borderwidth=0, highlightthickness=0, command=deletebook)
     b7.place(x=513,y=348,width=125,height=53)
     b7.image=btn_delbook
+     
+    btn_delbook1 = tk.PhotoImage(file = "./images/delete_booker.png")
+    b8=Button(image=btn_delbook1, borderwidth=0, highlightthickness=0, command=deletebookborrowed)
+    b8.place(x=513,y=403,width=125,height=53)
+    b8.image=btn_delbook1
 
 def show_btn_view():
     btn_viewstuds = tk.PhotoImage(file = "./images/view_studs.png")
@@ -392,8 +457,16 @@ def admin():
     global win,b1,b2,b3,b4,cur,con
     win=Tk()
     win.title('Admin')
-    win.geometry("878x702")
     win.resizable(False,False)
+
+    global screen_height, screen_width, x_cordinate, y_cordinate
+    window_width = 878
+    window_height = 702
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    win.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
 
     background_image=tk.PhotoImage(file="./images/bg_img.png")
     background_label=tk.Label(image=background_image)
@@ -410,7 +483,7 @@ def admin():
     view_btn.place(x=375,y=238,width=125,height=53)
     view_btn.image=viewimg
 
-    delimg = tk.PhotoImage(file = "./images/del_img.png")
+    delimg = tk.PhotoImage(file = "./images/delete_img.png")
     del_btn=Button(image=delimg, borderwidth=0, highlightthickness=0, command=show_btn_del)
     del_btn.place(x=513,y=238,width=125,height=53)
     del_btn.image=delimg
@@ -426,8 +499,16 @@ def admin1():
     global win,b1,b2,b3,b4,cur,con
     win=Tk()
     win.title('Admin')
-    win.geometry("878x702")
     win.resizable(False,False)
+
+    global screen_height, screen_width, x_cordinate, y_cordinate
+    window_width = 878
+    window_height = 702
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    win.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
 
     background_image=tk.PhotoImage(file="./images/bg_img.png")
     background_label=tk.Label(image=background_image)
@@ -444,7 +525,7 @@ def admin1():
     view_btn.place(x=375,y=238,width=125,height=53)
     view_btn.image=viewimg
 
-    delimg = tk.PhotoImage(file = "./images/del_img.png")
+    delimg = tk.PhotoImage(file = "./images/delete_img.png")
     del_btn=Button(image=delimg, borderwidth=0, highlightthickness=0, command=show_btn_del)
     del_btn.place(x=513,y=238,width=125,height=53)
     del_btn.image=delimg
@@ -472,8 +553,16 @@ def addbook():
     win.destroy()
     win=Tk()
     win.title('Add Book')
-    win.geometry("878x702")
     win.resizable(False,False)
+
+    global screen_height, screen_width, x_cordinate, y_cordinate
+    window_width = 878
+    window_height = 702
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    win.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
 
     bg_image=tk.PhotoImage(file="./images/bg_img.png")
     bg_label=tk.Label(image=bg_image)
@@ -517,53 +606,47 @@ def closebooks1():
 
 def addbooks():
     connectdb()
-    q='INSERT INTO Book VALUE("%i","%s","%s","%s","%s")'
     global cur,con
-    stats = "Available"
-    cur.execute(q%(int(e1.get()),e2.get(),e3.get(),e4.get(),stats))
-    con.commit()
-   
-    messagebox.showinfo("Success", "Book Added!")
-    closedb()
-    win.destroy()
-    admin1()
+    if (e1.get() == "" or e2.get() == "" or e3.get() == "" or e4.get() == ""):
+        messagebox.showinfo("Error", "No Input!")
+    else:
+        us1 = "SELECT * FROM Book where bookid = %s"
+        ck = (e1.get(),)
+        cur.execute(us1,ck)
+        done = cur.fetchone()
+        if(done != None):
+            messagebox.showinfo("Message", "Book ID Exist!")
+        else:
+            q='INSERT INTO Book VALUE("%i","%s","%s","%s","%s")'
+            
+            stats = "Available"
+            cur.execute(q%(int(e1.get()),e2.get(),e3.get(),e4.get(),stats))
+            con.commit()
+        
+            messagebox.showinfo("Success", "Book Added!")
+            closedb()
+            win.destroy()
+            admin1()
 
-def viewbook():
-    win=Tk()
-    win.title('View Books')
-    win.geometry("1000x300+270+180")
+        
 
-    treeview=Treeview(win,columns=("Book ID","Title","Author","Genre","Status"),show='headings')
-    treeview.heading("Book ID", text="Book ID")
-    treeview.heading("Title", text="Title")
-    treeview.heading("Author", text="Author")
-    treeview.heading("Genre", text="Genre")
-    treeview.heading("Status", text="Status")
-    treeview.column("Book ID", anchor='center')
-    treeview.column("Title", anchor='center')
-    treeview.column("Author", anchor='center')
-    treeview.column("Genre", anchor='center')
-    treeview.column("Status", anchor='center')
-    index=0
-    iid=0
-    connectdb()
-    q='SELECT * FROM Book'
-    cur.execute(q)
-    details=cur.fetchall()
-    for row in details:
-        treeview.insert("",index,iid,value=row)
-        index=iid=index+1
-    treeview.pack()
-    win.mainloop()
-    closedb()
+
 
 def deletebook():
     global win
     win.destroy()
     win=Tk()
     win.title('Delete Book')
-    win.geometry("878x702")
     win.resizable(False,False)
+
+    global screen_height, screen_width, x_cordinate, y_cordinate
+    window_width = 878
+    window_height = 702
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    win.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
 
     bg_image=tk.PhotoImage(file="./images/bg_img.png")
     bg_label=tk.Label(image=bg_image)
@@ -594,33 +677,44 @@ def deletebook():
 
 def deletebooks():
     connectdb()
-    bk = 'SELECT * FROM Book WHERE bookid= %s'
-    s_book = (e1.get(),)
-    cur.execute(bk,s_book)
-    d_book =cur.fetchone()
-    if(d_book == None):
-        messagebox.showinfo("Message", "Book not found!")
+    if (e1.get() == "" or e2.get() == ""):
+        messagebox.showinfo("Error", "No Input!")
     else:
-        if e2.get()=='admin':
-            q='DELETE FROM Book WHERE bookid="%i"'
-            cur.execute(q%(int(e1.get())))
-            con.commit()
-            
-            messagebox.showinfo("Success", "Book Deleted!")
-            closedb()
-            win.destroy()
-            admin1()
+        bk = 'SELECT * FROM Book WHERE bookid= %s'
+        s_book = (e1.get(),)
+        cur.execute(bk,s_book)
+        d_book =cur.fetchone()
+        if(d_book == None):
+            messagebox.showinfo("Message", "Book not found!")
         else:
-            messagebox.showinfo("Error", "Incorrect Password!")
-            closedb()
+            if e2.get()=='admin':
+                q='DELETE FROM Book WHERE bookid="%i"'
+                cur.execute(q%(int(e1.get())))
+                con.commit()
+                
+                messagebox.showinfo("Success", "Book Deleted!")
+                closedb()
+                win.destroy()
+                admin1()
+            else:
+                messagebox.showinfo("Error", "Incorrect Password!")
+                closedb()
 
 def add_student():
     global win
     win.destroy()
     win=Tk()
     win.title('Add Student')
-    win.geometry("878x702")
     win.resizable(False,False)
+
+    global screen_height, screen_width, x_cordinate, y_cordinate
+    window_width = 878
+    window_height = 702
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    win.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
 
     bg_image=tk.PhotoImage(file="./images/bg_img.png")
     bg_label=tk.Label(image=bg_image)
@@ -664,75 +758,90 @@ def add_student():
 def add_students():
     connectdb()
     global con,cur
-    us1 = "SELECT * FROM Login where studid = %s"
-    ck = (e2.get(),)
-    cur.execute(us1,ck)
-    done = cur.fetchone()
-    if(done != None):
-         messagebox.showinfo("Message", "Student ID Exist!")
 
-    else:
-        q='INSERT INTO Login VALUE("%s","%i","%s","%s","%s")'
-        
-        cur.execute(q%(e1.get(),int(e2.get()),e3.get(),e4.get(),e5.get()))
-        con.commit()
+    if (e1.get() == "" or e2.get() == "" or e3.get() == "" or e4.get() == "" or e5.get() == ""):
+        messagebox.showinfo("Error", "No Input!")
+
        
-        messagebox.showinfo("Success", "Student Added!")
-        closedb()
-        win.destroy()
-        admin1()
+    else: 
+        us1 = "SELECT * FROM Login where studid = %s"
+        ck = (e2.get(),)
+        cur.execute(us1,ck)
+        done = cur.fetchone()
+        if(done != None):
+            messagebox.showinfo("Message", "Student ID Exist!")
 
+        else:
+            q='INSERT INTO Login VALUE("%s","%i","%s","%s","%s")'
+            
+            cur.execute(q%(e1.get(),int(e2.get()),e3.get(),e4.get(),e5.get()))
+            con.commit()
+        
+            messagebox.showinfo("Success", "Student Added!")
+            closedb()
+            win.destroy()
+            admin1()
+         
 def close_students():
     global win
     win.destroy()
     admin1()
 
 def view_student():
-    win=Tk()
-    win.title('View Student')
-    win.geometry("1000x300+270+180")
-    win.resizable(False,False)
-    treeview=Treeview(win,columns=("Name","Student ID","Password","YearLevel","Course"),show='headings')
-    treeview.heading("Name", text="Name")
-    treeview.heading("Student ID", text="Student ID")
-    treeview.heading("Password", text="Password")
-    treeview.heading("YearLevel", text="YearLevel")
-    treeview.heading("Course", text="Course")
-    treeview.column("Name", anchor='center')
-    treeview.column("Student ID", anchor='center')
-    treeview.column("Password", anchor='center')
-    treeview.column("YearLevel", anchor='center')
-    treeview.column("Course", anchor='center')
-    index=0
-    iid=0
     connectdb()
+    q='SELECT * FROM Login'
+    cur.execute(q)
     details=cur.fetchall()
-    for row in details:
-        treeview.insert("",index,iid,value=row)
-        index=iid=index+1
-    treeview.pack()
-    win.mainloop()
+    if len(details)!=0:
+        win=Tk()
+        win.title('View Student')
+        win.geometry("1000x300+270+180")
+        win.resizable(False,False)
+        treeview=Treeview(win,columns=("Name","Student ID","Password","YearLevel","Course"),show='headings')
+        treeview.heading("Name", text="Name")
+        treeview.heading("Student ID", text="Student ID")
+        treeview.heading("Password", text="Password")
+        treeview.heading("YearLevel", text="YearLevel")
+        treeview.heading("Course", text="Course")
+        treeview.column("Name", anchor='center')
+        treeview.column("Student ID", anchor='center')
+        treeview.column("Password", anchor='center')
+        treeview.column("YearLevel", anchor='center')
+        treeview.column("Course", anchor='center')
+        index=0
+        iid=0
+
+        for row in details:
+            treeview.insert("",index,iid,value=row)
+            index=iid=index+1
+        treeview.pack()
+        win.mainloop()
+    else:
+        messagebox.showinfo("Message","No Students lists!")
     closedb()
 
 def borrowedbook1():
     connectdb()
+    
     q='SELECT * FROM BookBorrow '
     cur.execute(q)
     details=cur.fetchall()
     if len(details)!=0:
         win=Tk()
         win.title('Borrowed Books')
-        win.geometry("800x300+270+180")
+        win.geometry("1000x300+270+180")
         win.resizable(False,False)    
-        treeview=Treeview(win,columns=("Student ID","Book ID","Borrow Date","Return Book"),show='headings')
+        treeview=Treeview(win,columns=("Book Key","Student ID","Book ID","Borrow Date","Return Date"),show='headings')
+        treeview.heading("Book Key", text="Book Key")
         treeview.heading("Student ID", text="Student ID")
         treeview.heading("Book ID", text="Book ID")
         treeview.heading("Borrow Date", text="Borrow Date")
-        treeview.heading("Return Book", text="Return Book")
+        treeview.heading("Return Date", text="Return Date")
+        treeview.column("Book Key", anchor='center')
         treeview.column("Student ID", anchor='center')
         treeview.column("Book ID", anchor='center')
         treeview.column("Borrow Date", anchor='center')
-        treeview.column("Return Book", anchor='center')
+        treeview.column("Return Date", anchor='center')
         index=0
         iid=0
         for row in details:
@@ -749,8 +858,16 @@ def delete_student():
     win.destroy()
     win=Tk()
     win.title('Delete Studet')
-    win.geometry("878x702")
     win.resizable(False,False)
+
+    global screen_height, screen_width, x_cordinate, y_cordinate
+    window_width = 878
+    window_height = 702
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    win.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
 
     bg_image=tk.PhotoImage(file="./images/bg_img.png")
     bg_label=tk.Label(image=bg_image)
@@ -781,25 +898,98 @@ def delete_student():
 
 def delete_students():
     connectdb()
-    check = "SELECT * FROM Login WHERE studid=%s"
-    ret = (e1.get(),)
-    cur.execute(check, ret)
-    result = cur.fetchone()
-    if (result == None):
-         messagebox.showinfo("Result", "Student Not Found!")
+    if (e1.get() == "" or e2.get() == ""):
+        messagebox.showinfo("Error", "No Input!")
+
     else:
-        if e2.get()=='admin':
-            q='DELETE FROM Login WHERE studid="%i"'
-            cur.execute(q%(int(e1.get())))
-            con.commit()
-            
-            messagebox.showinfo("Success", "Student Deleted!")
-            closedb()
-            win.destroy()
-            admin1()
+        check = "SELECT * FROM Login WHERE studid=%s"
+        ret = (e1.get(),)
+        cur.execute(check, ret)
+        result = cur.fetchone()
+        if (result == None):
+            messagebox.showinfo("Result", "Student Not Found!")
         else:
-            messagebox.showinfo("Error", "Incorrect Password!")
-            closedb()
+            if e2.get()=='admin':
+                q='DELETE FROM Login WHERE studid="%i"'
+                cur.execute(q%(int(e1.get())))
+                con.commit()
+                
+                messagebox.showinfo("Success", "Student Deleted!")
+                closedb()
+                win.destroy()
+                admin1()
+            else:
+                messagebox.showinfo("Error", "Incorrect Password!")
+                closedb()
+
+def deletebookborrowed():
+    global win
+    win.destroy()
+    win=Tk()
+    win.title('Delete Book')
+    win.resizable(False,False)
+
+    global screen_height, screen_width, x_cordinate, y_cordinate
+    window_width = 878
+    window_height = 702
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    win.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
+
+    bg_image=tk.PhotoImage(file="./images/bg_img.png")
+    bg_label=tk.Label(image=bg_image)
+    bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+    bg_label.image=bg_image
+
+    global e1,e2,b1,b2
+
+    bookid_lbl=Label(win,text='Book Key', font='Helvetica 12', bg="#F7F6F8")
+    bookid_lbl.place(x=230,y=227)
+    adminpass_lbl=Label(win,text='Admin Password',  font='Helvetica 12', bg="#F7F6F8")
+    adminpass_lbl.place(x=448,y=227)
+
+    e1=Entry(win, bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
+    e1.place(x=230.0,y=255.0,width=194.0,height=50.0)
+    e2=Entry(win,bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
+    e2.place(x=447.0,y=255.0,width=194.0,height=50.0)
+
+    delbookborrowed_btn = tk.PhotoImage(file = "./images/delbook_fdb.png")
+    b1=Button(image=delbookborrowed_btn, borderwidth=0, highlightthickness=0, command=deletebookborroweds)
+    b1.place(x=230.0,y=494.0,width=194.0,height=71.0)
+
+    close1_bookbtn = tk.PhotoImage(file = "./images/close_btn.png")
+    b2=Button(image=close1_bookbtn, borderwidth=0, highlightthickness=0, command=closebooks1)
+    b2.place(x=447.0,y=494.0,width=194.0,height=71.0)
+
+    win.mainloop()
+
+def deletebookborroweds():
+    connectdb()
+    if (e1.get() == "" or e2.get() == ""):
+        messagebox.showinfo("Error", "No Input!")
+    else:
+        bk1 = 'SELECT * FROM BookBorrow WHERE borrowkey= %s'
+        s_book1 = (e1.get(),)
+        cur.execute(bk1,s_book1)
+        d_book1 =cur.fetchone()
+        if(d_book1 == None):
+            messagebox.showinfo("Message", "Book not found!")
+        else:
+            if e2.get()=='admin':
+                q='DELETE FROM BookBorrow WHERE borrowkey="%i"'
+                cur.execute(q%(int(e1.get())))
+                con.commit()
+                
+                messagebox.showinfo("Success", "Book Deleted!")
+                closedb()
+                win.destroy()
+                admin1()
+            else:
+                messagebox.showinfo("Error", "Incorrect Password!")
+                closedb()
+
 
 def connectdb():
     global con,cur
@@ -812,10 +1002,13 @@ def connectdb():
     if enter==1:
         l='CREATE TABLE IF NOT EXISTS Login(name varchar(50),studid varchar(10),password varchar(30),yearlevel varchar(20),course varchar(20))'
         b='CREATE TABLE IF NOT EXISTS Book(bookid int(15), title varchar(50),author varchar(50),genre varchar(50),status varchar(20))'
-        i='CREATE TABLE IF NOT EXISTS BookBorrow(stdid varchar(50),bookids varchar(50),borrow date,returnbook varchar(20))'
+        i='CREATE TABLE IF NOT EXISTS BookBorrow(borrowkey int(20) AUTO_INCREMENT,stdid varchar(50),bookids varchar(50),borrow date,return_borrow date DEFAULT NULL , PRIMARY KEY (borrowkey))'
+        c='ALTER TABLE BookBorrow AUTO_INCREMENT = 387'
+        
         cur.execute(l)
         cur.execute(b)
         cur.execute(i)
+        cur.execute(c)
         enter=enter+1
     query='SELECT * FROM Login'
     cur.execute(query)
@@ -826,8 +1019,16 @@ def home():
         window=Tk()
         window.title('Library Management System')
         window.resizable(False,False)
-        window.geometry("878x702")
         
+        global screen_height, screen_width, x_cordinate, y_cordinate
+        window_width = 878
+        window_height = 702
+        screen_width = window.winfo_screenwidth()
+        screen_height = window.winfo_screenheight()
+        x_cordinate = int((screen_width/2) - (window_width/2))
+        y_cordinate = int((screen_height/2) - (window_height/2))
+        window.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
+
         bg_image=tk.PhotoImage(file="./images/bg_img.png")
         bg_label=tk.Label(image=bg_image)
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
