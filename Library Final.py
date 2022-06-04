@@ -31,6 +31,7 @@ def loginstd():
     else:
         messagebox.showinfo("Error","Failed to Login")
 
+# mini drop down, actions in book
 def show_btn_book():
     btn_borrowbook = tk.PhotoImage(file = "./images/book_borrow.png")
     b1=Button(image=btn_borrowbook, borderwidth=0, highlightthickness=0, command=borrowbook)
@@ -281,75 +282,6 @@ def returnbook():
 
 def returnbooks():
     connectdb()
-    # if (e2.get() != ""):
-    #     s_var = 'SELECT stdid FROM BookBorrow where borrowkey = %s'
-    #     s_val = (e2.get())
-    #     cur.execute(s_var, s_val)
-    #     s_result = cur.fetchone()
-    #     print (e1.get())
-    #     d_var = 'SELECT returndate FROM BookBorrow where borrowkey = %s'
-    #     d_val = (e2.get())
-    #     cur.execute(d_var, d_val)
-    #     d_result = cur.fetchone()
-    #     if(d_result[0] == None):
-    #         if(s_result[0] == e1.get()):
-                
-    #             n_var = 'SELECT bookid FROM BookBorrow WHERE borrowkey=%s'
-    #             n_val = (e2.get(),)
-    #             cur.execute(n_var,n_val)
-    #             n_result = cur.fetchone()
-
-    #             if(n_result != None):
-    #                 print (e2.get())
-    #                 check1 = "SELECT status FROM Book WHERE bookid=%s"
-    #                 ret1 = (n_result[0],)
-    #                 cur.execute(check1, ret1)
-    #                 result = cur.fetchone()
-    #                 if(result != None):    
-    #                     if(result[0] == 'Not Available'):
-    #                         check = "SELECT * FROM Book WHERE bookid=%s"
-    #                         ret = (ret1)
-    #                         cur.execute(check, ret)
-    #                         result = cur.fetchone()
-    #                         if (result == None):
-    #                             messagebox.showinfo("Result", "Book not found!")
-    #                         else:
-    #                             print (e2.get())
-    #                             r_book = 'UPDATE Book SET status = %s Where bookid = %s'
-    #                             s_book = "Available"
-    #                             o_result = (s_book, n_result[0])
-    #                             cur.execute(r_book,o_result)
-    #                             con.commit()
-                                
-                                
-    #                             a='UPDATE BookBorrow SET returndate = %s Where  borrowkey = %s'
-    #                             i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
-    #                             i=i.isoformat()
-    #                             stats_ret = i 
-    #                             val = (stats_ret,e2.get()) 
-                                
-    #                             cur.execute(a,val)
-    #                             con.commit()
-                            
-    #                             messagebox.showinfo("Success", "Book Returned!")
-    #                             closedb()
-    #                             win.destroy()
-    #                             stud1()
-
-    #                     else: 
-    #                         messagebox.showinfo("Success", "You Already Returned!")
-    #                 else:
-    #                     messagebox.showinfo("Result", "Book not found!")
-            
-    #             else:
-    #                 messagebox.showinfo("Error", "Borrow Key Not Found!")
-    #         else:        
-        
-    #             messagebox.showinfo("Error", "Invalid!")
-    #     else:
-    #         messagebox.showinfo("Success", "You Already Returned!")
-    # else:
-    #     messagebox.showinfo("Error", "Field can't be emppty!")
     if (e2.get() != ""):
         n_var = 'SELECT bookid FROM BookBorrow WHERE borrowkey=%s'
         n_val = (e2.get(),)
@@ -357,55 +289,61 @@ def returnbooks():
         n_result = cur.fetchone()
         
         if(n_result != None):
-            print (e2.get())
-            check1 = "SELECT status FROM Book WHERE bookid=%s"
-            ret1 = (n_result[0],)
-            cur.execute(check1, ret1)
-            result = cur.fetchone()
-            if(result != None):
-                d_var = 'SELECT returndate FROM BookBorrow where borrowkey = %s'
-                d_val = (e2.get())
-                cur.execute(d_var, d_val)
-                d_result = cur.fetchone()
-                if(result[0] == 'Not Available' and d_result[0] == None):
-                    check = "SELECT * FROM Book WHERE bookid=%s"
-                    ret = (ret1)
-                    cur.execute(check, ret)
-                    result = cur.fetchone()
-                    if (result == None):
-                        messagebox.showinfo("Message", "Book not Found!")
-                    else:
-                        print (e2.get())
-                        r_book = 'UPDATE Book SET status = %s Where bookid = %s'
-                        s_book = "Available"
-                        o_result = (s_book, n_result[0])
-                        cur.execute(r_book,o_result)
-                        con.commit()
-                        
-                        
-                        a='UPDATE BookBorrow SET returndate = %s Where  borrowkey = %s'
-                        i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
-                        i=i.isoformat()
-                        stats_ret = i 
-                        val = (stats_ret,e2.get()) 
-                        
-                        cur.execute(a,val)
-                        con.commit()
-                    
-                        messagebox.showinfo("Success", "Book Returned!")
-                        closedb()
-                        win.destroy()
-                        stud1()
+            s_var = 'SELECT stdid FROM BookBorrow where borrowkey = %s'
+            s_val = (e2.get())
+            cur.execute(s_var, s_val)
+            s_result = cur.fetchone()
+            if(s_result[0] == e1.get()):
+                print (e2.get())
+                check1 = "SELECT status FROM Book WHERE bookid=%s"
+                ret1 = (n_result[0],)
+                cur.execute(check1, ret1)
+                result = cur.fetchone()
 
-                else: 
-                    messagebox.showinfo("Success", "Book already Returned!")
+                if(result != None):
+                    d_var = 'SELECT returndate FROM BookBorrow where borrowkey = %s'
+                    d_val = (e2.get())
+                    cur.execute(d_var, d_val)
+                    d_result = cur.fetchone()
+                    if(result[0] == 'Not Available' or d_result[0] == None):
+                        check = "SELECT * FROM Book WHERE bookid=%s"
+                        ret = (ret1)
+                        cur.execute(check, ret)
+                        result = cur.fetchone()
+                        if (result == None):
+                            messagebox.showinfo("Message", "Book not Found!")
+                        else:
+                            print (e2.get())
+                            r_book = 'UPDATE Book SET status = %s Where bookid = %s'
+                            s_book = "Available"
+                            o_result = (s_book, n_result[0])
+                            cur.execute(r_book,o_result)
+                            con.commit()
+                            
+                            a='UPDATE BookBorrow SET returndate = %s Where  borrowkey = %s'
+                            i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
+                            i=i.isoformat()
+                            stats_ret = i 
+                            val = (stats_ret,e2.get()) 
+                            
+                            cur.execute(a,val)
+                            con.commit()
+                        
+                            messagebox.showinfo("Success", "Book Returned!")
+                            closedb()
+                            win.destroy()
+                            stud1()
+
+                    else: 
+                        messagebox.showinfo("Success", "Book already Returned!")
+                else:
+                    messagebox.showinfo("Message", "Book not Found!")
             else:
-                messagebox.showinfo("Message", "Book not Found!")
-    
+                messagebox.showinfo("Message", "Book borrowed by other student!")
         else:
-            messagebox.showinfo("Error", "Borrow Key Not Found!")
+            messagebox.showinfo("Message", "Borrow Key Not Found!")
     else:
-        messagebox.showinfo("Erro", "Field can't be Empty!")
+        messagebox.showinfo("Message", "Field can't be Empty!")
     
 def viewbook():
     connectdb()
