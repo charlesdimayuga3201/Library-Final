@@ -7,7 +7,7 @@ from tkinter.ttk import Combobox
 from tkinter.ttk import Treeview
 import datetime
 from PIL import Image, ImageTk
-from tkinter import Canvas, Entry, Text, Button, PhotoImage
+# from tkinter import Canvas, Entry, Text, Button, PhotoImage
 
 b1,b2,b3,b4,b5,b6,b7,b8,sID,cur,con,e1,e2,e3,e4,e5,i,ps=None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
 window,win=None,None
@@ -195,10 +195,9 @@ def borrowbooks():
         result = cur.fetchone()
         if(result != None):    
             if(result[0] == 'Not Available'):
-                messagebox.showinfo("Failed", "Book Already Borrowed!")
+                messagebox.showinfo("Failed", "Book already Borrowed!")
 
             else: 
-                
                 stats_borrow = 'UPDATE Book Set status = %s Where bookid = %s'
                 stats_b = "Not Available"
                 
@@ -206,7 +205,7 @@ def borrowbooks():
                 cur.execute(stats_borrow,for_book)
                 con.commit()
 
-                q='INSERT INTO BookBorrow(stdid,bookids,borrow,return_borrow)VALUE("%s","%s","%s",NULL)'
+                q='INSERT INTO BookBorrow(stdid,bookid,borrowdate,returndate)VALUE("%s","%s","%s",NULL)'
                 i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
                 i=i.isoformat()
               
@@ -217,9 +216,9 @@ def borrowbooks():
                 win.destroy()
                 stud1()
         else:
-            messagebox.showinfo("Error", "No Book Found!")
+            messagebox.showinfo("Error", "No book Found!")
     else: 
-         messagebox.showinfo("Error", "No Input!")
+         messagebox.showinfo("Error", "Field can't be Empty!")
 def returnbook():
     global win,sID
     win.destroy()
@@ -244,7 +243,7 @@ def returnbook():
     global e1,e2,b1
     studid_lbl=Label(win,text='Student ID', font='Helvetica 12', bg="#F7F6F8")
     studid_lbl.place(x=230,y=227)
-    bookid_lbl=Label(win,text='Book Key',  font='Helvetica 12', bg="#F7F6F8")
+    bookid_lbl=Label(win,text='Borrow Key',  font='Helvetica 12', bg="#F7F6F8")
     bookid_lbl.place(x=448,y=227)
     borrowdate_lbl=Label(win,text='Return date',  font='Helvetica 12', bg="#F7F6F8")
     borrowdate_lbl.place(x=230,y=318)
@@ -282,70 +281,77 @@ def returnbook():
 
 def returnbooks():
     connectdb()
-<<<<<<< HEAD
-    
-    if (e2.get() != ""):
-        s_var = 'SELECT stdid FROM BookBorrow where borrowkey = %s'
-        s_val = (e2.get())
-        cur.execute(s_var, s_val)
-        s_result = cur.fetchone()
-        print (e1.get())
-        if(s_result[0] == e1.get()):
+    # if (e2.get() != ""):
+    #     s_var = 'SELECT stdid FROM BookBorrow where borrowkey = %s'
+    #     s_val = (e2.get())
+    #     cur.execute(s_var, s_val)
+    #     s_result = cur.fetchone()
+    #     print (e1.get())
+    #     d_var = 'SELECT returndate FROM BookBorrow where borrowkey = %s'
+    #     d_val = (e2.get())
+    #     cur.execute(d_var, d_val)
+    #     d_result = cur.fetchone()
+    #     if(d_result[0] == None):
+    #         if(s_result[0] == e1.get()):
+                
+    #             n_var = 'SELECT bookid FROM BookBorrow WHERE borrowkey=%s'
+    #             n_val = (e2.get(),)
+    #             cur.execute(n_var,n_val)
+    #             n_result = cur.fetchone()
+
+    #             if(n_result != None):
+    #                 print (e2.get())
+    #                 check1 = "SELECT status FROM Book WHERE bookid=%s"
+    #                 ret1 = (n_result[0],)
+    #                 cur.execute(check1, ret1)
+    #                 result = cur.fetchone()
+    #                 if(result != None):    
+    #                     if(result[0] == 'Not Available'):
+    #                         check = "SELECT * FROM Book WHERE bookid=%s"
+    #                         ret = (ret1)
+    #                         cur.execute(check, ret)
+    #                         result = cur.fetchone()
+    #                         if (result == None):
+    #                             messagebox.showinfo("Result", "Book not found!")
+    #                         else:
+    #                             print (e2.get())
+    #                             r_book = 'UPDATE Book SET status = %s Where bookid = %s'
+    #                             s_book = "Available"
+    #                             o_result = (s_book, n_result[0])
+    #                             cur.execute(r_book,o_result)
+    #                             con.commit()
+                                
+                                
+    #                             a='UPDATE BookBorrow SET returndate = %s Where  borrowkey = %s'
+    #                             i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
+    #                             i=i.isoformat()
+    #                             stats_ret = i 
+    #                             val = (stats_ret,e2.get()) 
+                                
+    #                             cur.execute(a,val)
+    #                             con.commit()
+                            
+    #                             messagebox.showinfo("Success", "Book Returned!")
+    #                             closedb()
+    #                             win.destroy()
+    #                             stud1()
+
+    #                     else: 
+    #                         messagebox.showinfo("Success", "You Already Returned!")
+    #                 else:
+    #                     messagebox.showinfo("Result", "Book not found!")
             
-            n_var = 'SELECT bookids FROM BookBorrow WHERE borrowkey=%s'
-            n_val = (e2.get(),)
-            cur.execute(n_var,n_val)
-            n_result = cur.fetchone()
-
-            if(n_result != None):
-                print (e2.get())
-                check1 = "SELECT status FROM Book WHERE bookid=%s"
-                ret1 = (n_result[0],)
-                cur.execute(check1, ret1)
-                result = cur.fetchone()
-                if(result != None):    
-                    if(result[0] == 'Not Available'):
-                        check = "SELECT * FROM Book WHERE bookid=%s"
-                        ret = (ret1)
-                        cur.execute(check, ret)
-                        result = cur.fetchone()
-                        if (result == None):
-                            messagebox.showinfo("Result", "Book not found!")
-                        else:
-                            print (e2.get())
-                            r_book = 'UPDATE Book SET status = %s Where bookid = %s'
-                            s_book = "Available"
-                            o_result = (s_book, n_result[0])
-                            cur.execute(r_book,o_result)
-                            con.commit()
-                            
-                            
-                            a='UPDATE BookBorrow SET return_borrow = %s Where  borrowkey = %s'
-                            i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
-                            i=i.isoformat()
-                            stats_ret = i 
-                            val = (stats_ret,e2.get()) 
-                            
-                            cur.execute(a,val)
-                            con.commit()
-                        
-                            messagebox.showinfo("Success", "Book Returned!")
-                            closedb()
-                            win.destroy()
-                            stud1()
-
-                    else: 
-                        messagebox.showinfo("Success", "You Already Returned!")
-                else:
-                    messagebox.showinfo("Result", "Book not found!")
+    #             else:
+    #                 messagebox.showinfo("Error", "Borrow Key Not Found!")
+    #         else:        
         
-            else:
-                messagebox.showinfo("Error", "Borrow Key Not Found!")
-        else:        
-            messagebox.showinfo("Error", "Invalid!")
-=======
+    #             messagebox.showinfo("Error", "Invalid!")
+    #     else:
+    #         messagebox.showinfo("Success", "You Already Returned!")
+    # else:
+    #     messagebox.showinfo("Error", "Field can't be emppty!")
     if (e2.get() != ""):
-        n_var = 'SELECT bookids FROM BookBorrow WHERE borrowkey=%s'
+        n_var = 'SELECT bookid FROM BookBorrow WHERE borrowkey=%s'
         n_val = (e2.get(),)
         cur.execute(n_var,n_val)
         n_result = cur.fetchone()
@@ -356,14 +362,18 @@ def returnbooks():
             ret1 = (n_result[0],)
             cur.execute(check1, ret1)
             result = cur.fetchone()
-            if(result != None):    
-                if(result[0] == 'Not Available'):
+            if(result != None):
+                d_var = 'SELECT returndate FROM BookBorrow where borrowkey = %s'
+                d_val = (e2.get())
+                cur.execute(d_var, d_val)
+                d_result = cur.fetchone()
+                if(result[0] == 'Not Available' and d_result[0] == None):
                     check = "SELECT * FROM Book WHERE bookid=%s"
                     ret = (ret1)
                     cur.execute(check, ret)
                     result = cur.fetchone()
                     if (result == None):
-                        messagebox.showinfo("Result", "Book not found!")
+                        messagebox.showinfo("Message", "Book not Found!")
                     else:
                         print (e2.get())
                         r_book = 'UPDATE Book SET status = %s Where bookid = %s'
@@ -373,7 +383,7 @@ def returnbooks():
                         con.commit()
                         
                         
-                        a='UPDATE BookBorrow SET return_borrow = %s Where  borrowkey = %s'
+                        a='UPDATE BookBorrow SET returndate = %s Where  borrowkey = %s'
                         i=datetime.datetime(int(com1y.get()),month.index(com1m.get())+1,int(com1d.get()))
                         i=i.isoformat()
                         stats_ret = i 
@@ -388,17 +398,15 @@ def returnbooks():
                         stud1()
 
                 else: 
-                    messagebox.showinfo("Success", "You Already Returned!")
+                    messagebox.showinfo("Success", "Book already Returned!")
             else:
-                messagebox.showinfo("Result", "Book not found!")
+                messagebox.showinfo("Message", "Book not Found!")
     
         else:
             messagebox.showinfo("Error", "Borrow Key Not Found!")
->>>>>>> dfa390b82c5df41c2a747f9b9bf8c07fda42b44a
     else:
-        messagebox.showinfo("Erro", "No Input!")
+        messagebox.showinfo("Erro", "Field can't be Empty!")
     
-
 def viewbook():
     connectdb()
     q='SELECT * FROM Book'
@@ -430,7 +438,7 @@ def viewbook():
         treeview.pack()
         win.mainloop()
     else:
-        messagebox.showinfo("Message","No Book lists!")
+        messagebox.showinfo("Message","No book Lists!")
     closedb()
 
 def borrowedbook():
@@ -444,13 +452,13 @@ def borrowedbook():
         win.title('Borrowed  Books')
         win.geometry("1000x300+270+180")
         win.resizable(False,False)    
-        treeview=Treeview(win,columns=("Book Key","Student ID","Book ID","Borrow Date","Return Date"),show='headings')
-        treeview.heading("Book Key", text="Book Key")
+        treeview=Treeview(win,columns=("Borrow Key","Student ID","Book ID","Borrow Date","Return Date"),show='headings')
+        treeview.heading("Borrow Key", text="Borrow Key")
         treeview.heading("Student ID", text="Student ID")
         treeview.heading("Book ID", text="Book ID")
         treeview.heading("Borrow Date", text="Borrow Date")
         treeview.heading("Return Date", text="Return Date")
-        treeview.column("Book Key", anchor='center')
+        treeview.column("Borrow Key", anchor='center')
         treeview.column("Student ID", anchor='center')
         treeview.column("Book ID", anchor='center')
         treeview.column("Borrow Date", anchor='center')
@@ -463,7 +471,7 @@ def borrowedbook():
         treeview.pack()
         win.mainloop()
     else:
-        messagebox.showinfo("Message","No Book Borrowed!")
+        messagebox.showinfo("Message","No book Borrowed!")
     closedb()
 
 def loginadmin():
@@ -483,8 +491,8 @@ def show_btn_del():
     b7.place(x=513,y=348,width=125,height=53)
     b7.image=btn_delbook
      
-    btn_delbook1 = tk.PhotoImage(file = "./images/delete_booker.png")
-    b8=Button(image=btn_delbook1, borderwidth=0, highlightthickness=0, command=deletebookborrowed)
+    btn_delbook1 = tk.PhotoImage(file = "./images/delete_record.png")
+    b8=Button(image=btn_delbook1, borderwidth=0, highlightthickness=0, command=delborrowed_rec)
     b8.place(x=513,y=403,width=125,height=53)
     b8.image=btn_delbook1
 
@@ -671,7 +679,7 @@ def addbooks():
     connectdb()
     global cur,con
     if (e1.get() == "" or e2.get() == "" or e3.get() == "" or e4.get() == ""):
-        messagebox.showinfo("Error", "No Input!")
+        messagebox.showinfo("Error", "Field can't be Empty!")
     else:
         us1 = "SELECT * FROM Book where bookid = %s"
         ck = (e1.get(),)
@@ -690,10 +698,6 @@ def addbooks():
             closedb()
             win.destroy()
             admin1()
-
-        
-
-
 
 def deletebook():
     global win
@@ -741,14 +745,14 @@ def deletebook():
 def deletebooks():
     connectdb()
     if (e1.get() == "" or e2.get() == ""):
-        messagebox.showinfo("Error", "No Input!")
+        messagebox.showinfo("Error", "Field can't be Empty!")
     else:
         bk = 'SELECT * FROM Book WHERE bookid= %s'
         s_book = (e1.get(),)
         cur.execute(bk,s_book)
         d_book =cur.fetchone()
         if(d_book == None):
-            messagebox.showinfo("Message", "Book not found!")
+            messagebox.showinfo("Message", "Book not Found!")
         else:
             if e2.get()=='admin':
                 q='DELETE FROM Book WHERE bookid="%i"'
@@ -823,11 +827,10 @@ def add_students():
     global con,cur
 
     if (e1.get() == "" or e2.get() == "" or e3.get() == "" or e4.get() == "" or e5.get() == ""):
-        messagebox.showinfo("Error", "No Input!")
+        messagebox.showinfo("Error", "Field can't be Empty!")
 
-       
     else: 
-        us1 = "SELECT * FROM Login where studid = %s"
+        us1 = "SELECT * FROM Student where studid = %s"
         ck = (e2.get(),)
         cur.execute(us1,ck)
         done = cur.fetchone()
@@ -835,7 +838,7 @@ def add_students():
             messagebox.showinfo("Message", "Student ID Exist!")
 
         else:
-            q='INSERT INTO Login VALUE("%s","%i","%s","%s","%s")'
+            q='INSERT INTO Student VALUE("%s","%i","%s","%s","%s")'
             
             cur.execute(q%(e1.get(),int(e2.get()),e3.get(),e4.get(),e5.get()))
             con.commit()
@@ -852,7 +855,7 @@ def close_students():
 
 def view_student():
     connectdb()
-    q='SELECT * FROM Login'
+    q='SELECT * FROM Student'
     cur.execute(q)
     details=cur.fetchall()
     if len(details)!=0:
@@ -880,7 +883,7 @@ def view_student():
         treeview.pack()
         win.mainloop()
     else:
-        messagebox.showinfo("Message","No Students lists!")
+        messagebox.showinfo("Message","No student Lists!")
     closedb()
 
 def borrowedbook1():
@@ -894,13 +897,13 @@ def borrowedbook1():
         win.title('Borrowed Books')
         win.geometry("1000x300+270+180")
         win.resizable(False,False)    
-        treeview=Treeview(win,columns=("Book Key","Student ID","Book ID","Borrow Date","Return Date"),show='headings')
-        treeview.heading("Book Key", text="Book Key")
+        treeview=Treeview(win,columns=("Borrow Key","Student ID","Book ID","Borrow Date","Return Date"),show='headings')
+        treeview.heading("Borrow Key", text="Borrow Key")
         treeview.heading("Student ID", text="Student ID")
         treeview.heading("Book ID", text="Book ID")
         treeview.heading("Borrow Date", text="Borrow Date")
         treeview.heading("Return Date", text="Return Date")
-        treeview.column("Book Key", anchor='center')
+        treeview.column("Borrow Key", anchor='center')
         treeview.column("Student ID", anchor='center')
         treeview.column("Book ID", anchor='center')
         treeview.column("Borrow Date", anchor='center')
@@ -913,7 +916,7 @@ def borrowedbook1():
         treeview.pack()
         win.mainloop()
     else:
-        messagebox.showinfo("Message","No Book Borrowed!")
+        messagebox.showinfo("Message","No book Borrowed!")
     closedb()
 
 def delete_student():
@@ -962,10 +965,10 @@ def delete_student():
 def delete_students():
     connectdb()
     if (e1.get() == "" or e2.get() == ""):
-        messagebox.showinfo("Error", "No Input!")
+        messagebox.showinfo("Error", "Field can't be Empty!")
 
     else:
-        check = "SELECT * FROM Login WHERE studid=%s"
+        check = "SELECT * FROM Student WHERE studid=%s"
         ret = (e1.get(),)
         cur.execute(check, ret)
         result = cur.fetchone()
@@ -973,7 +976,7 @@ def delete_students():
             messagebox.showinfo("Result", "Student Not Found!")
         else:
             if e2.get()=='admin':
-                q='DELETE FROM Login WHERE studid="%i"'
+                q='DELETE FROM Student WHERE studid="%i"'
                 cur.execute(q%(int(e1.get())))
                 con.commit()
                 
@@ -985,11 +988,11 @@ def delete_students():
                 messagebox.showinfo("Error", "Incorrect Password!")
                 closedb()
 
-def deletebookborrowed():
+def delborrowed_rec():
     global win
     win.destroy()
     win=Tk()
-    win.title('Delete Book')
+    win.title('Delete Record')
     win.resizable(False,False)
 
     global screen_height, screen_width, x_cordinate, y_cordinate
@@ -1008,7 +1011,7 @@ def deletebookborrowed():
 
     global e1,e2,b1,b2
 
-    bookid_lbl=Label(win,text='Book Key', font='Helvetica 12', bg="#F7F6F8")
+    bookid_lbl=Label(win,text='Borrow Key', font='Helvetica 12', bg="#F7F6F8")
     bookid_lbl.place(x=230,y=227)
     adminpass_lbl=Label(win,text='Admin Password',  font='Helvetica 12', bg="#F7F6F8")
     adminpass_lbl.place(x=448,y=227)
@@ -1018,8 +1021,8 @@ def deletebookborrowed():
     e2=Entry(win,bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
     e2.place(x=447.0,y=255.0,width=194.0,height=50.0)
 
-    delbookborrowed_btn = tk.PhotoImage(file = "./images/delbook_fdb.png")
-    b1=Button(image=delbookborrowed_btn, borderwidth=0, highlightthickness=0, command=deletebookborroweds)
+    delbookborrowed_btn = tk.PhotoImage(file = "./images/delrec_fdb.png")
+    b1=Button(image=delbookborrowed_btn, borderwidth=0, highlightthickness=0, command=delborrowed_recs)
     b1.place(x=230.0,y=494.0,width=194.0,height=71.0)
 
     close1_bookbtn = tk.PhotoImage(file = "./images/close_btn.png")
@@ -1028,32 +1031,24 @@ def deletebookborrowed():
 
     win.mainloop()
 
-def deletebookborroweds():
+def delborrowed_recs():
     connectdb()
     if (e1.get() == "" or e2.get() == ""):
-        messagebox.showinfo("Error", "No Input!")
+        messagebox.showinfo("Error", "Field can't be Empty!")
     else:
         bk1 = 'SELECT * FROM BookBorrow WHERE borrowkey= %s'
         s_book1 = (e1.get(),)
         cur.execute(bk1,s_book1)
         d_book1 =cur.fetchone()
         if(d_book1 == None):
-<<<<<<< HEAD
-            messagebox.showinfo("Message", "Record not found!")
-=======
-            messagebox.showinfo("Message", "Book not found!")
->>>>>>> dfa390b82c5df41c2a747f9b9bf8c07fda42b44a
+            messagebox.showinfo("Message", "Book not Found!")
         else:
             if e2.get()=='admin':
                 q='DELETE FROM BookBorrow WHERE borrowkey="%i"'
                 cur.execute(q%(int(e1.get())))
                 con.commit()
                 
-<<<<<<< HEAD
                 messagebox.showinfo("Success", "Record Deleted!")
-=======
-                messagebox.showinfo("Success", "Book Deleted!")
->>>>>>> dfa390b82c5df41c2a747f9b9bf8c07fda42b44a
                 closedb()
                 win.destroy()
                 admin1()
@@ -1071,9 +1066,9 @@ def connectdb():
     cur.execute('USE LIBRARY')
     global enter
     if enter==1:
-        l='CREATE TABLE IF NOT EXISTS Login(name varchar(50),studid varchar(10),password varchar(30),yearlevel varchar(20),course varchar(20))'
-        b='CREATE TABLE IF NOT EXISTS Book(bookid int(15), title varchar(50),author varchar(50),genre varchar(50),status varchar(20))'
-        i='CREATE TABLE IF NOT EXISTS BookBorrow(borrowkey int(20) AUTO_INCREMENT,stdid varchar(50),bookids varchar(50),borrow date,return_borrow date DEFAULT NULL , PRIMARY KEY (borrowkey))'
+        l='CREATE TABLE IF NOT EXISTS Student(name varchar(50),studid varchar(10),password varchar(30),yearlevel varchar(20),course varchar(20), PRIMARY KEY(studid))'
+        b='CREATE TABLE IF NOT EXISTS Book(bookid int(15), title varchar(50),author varchar(50),genre varchar(50),status varchar(20), PRIMARY KEY(bookid))'
+        i='CREATE TABLE IF NOT EXISTS BookBorrow(borrowkey int(20) AUTO_INCREMENT,stdid varchar(10),bookid varchar(15),borrowdate date,returndate date DEFAULT NULL , PRIMARY KEY (borrowkey))'
         c='ALTER TABLE BookBorrow AUTO_INCREMENT = 387'
         
         cur.execute(l)
@@ -1081,7 +1076,7 @@ def connectdb():
         cur.execute(i)
         cur.execute(c)
         enter=enter+1
-    query='SELECT * FROM Login'
+    query='SELECT * FROM Student'
     cur.execute(query)
 
 def home():
@@ -1105,7 +1100,7 @@ def home():
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
         bg_label.image=bg_image 
         
-        usid=Label(window,text='Student ID', font='Helvetica 12', bg="#F7F6F8")
+        usid=Label(window,text='Student or Admin ID', font='Helvetica 12', bg="#F7F6F8")
         usid.place(x=260,y=200)
         paswrd=Label(window,text='Password',  font='Helvetica 12', bg="#F7F6F8")
         paswrd.place(x=260,y=293)
