@@ -196,7 +196,7 @@ def borrowbooks():
         result = cur.fetchone()
         if(result != None):    
             if(result[0] == 'Not Available'):
-                messagebox.showinfo("Failed", "Book already Borrowed!")
+                messagebox.showinfo("Message", "Book already Borrowed!")
 
             else: 
                 stats_borrow = 'UPDATE Book Set status = %s Where bookid = %s'
@@ -217,7 +217,7 @@ def borrowbooks():
                 win.destroy()
                 stud1()
         else:
-            messagebox.showinfo("Error", "No book Found!")
+            messagebox.showinfo("Message", "No book Found!")
     else: 
          messagebox.showinfo("Error", "Field can't be Empty!")
 def returnbook():
@@ -305,7 +305,7 @@ def returnbooks():
                     d_val = (e2.get())
                     cur.execute(d_var, d_val)
                     d_result = cur.fetchone()
-                    if(result[0] == 'Not Available' or d_result[0] == None):
+                    if(result[0] == 'Not Available' and d_result[0] == None):
                         check = "SELECT * FROM Book WHERE bookid=%s"
                         ret = (ret1)
                         cur.execute(check, ret)
@@ -343,7 +343,7 @@ def returnbooks():
         else:
             messagebox.showinfo("Message", "Borrow Key Not Found!")
     else:
-        messagebox.showinfo("Message", "Field can't be Empty!")
+        messagebox.showinfo("Error", "Field can't be Empty!")
     
 def viewbook():
     connectdb()
@@ -637,74 +637,6 @@ def addbooks():
             win.destroy()
             admin1()
 
-def deletebook():
-    global win
-    win.destroy()
-    win=Tk()
-    win.title('Delete Book')
-    win.resizable(False,False)
-
-    global screen_height, screen_width, x_cordinate, y_cordinate
-    window_width = 878
-    window_height = 702
-    screen_width = win.winfo_screenwidth()
-    screen_height = win.winfo_screenheight()
-    x_cordinate = int((screen_width/2) - (window_width/2))
-    y_cordinate = int((screen_height/2) - (window_height/2))
-    win.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
-
-    bg_image=tk.PhotoImage(file="./images/bg_img.png")
-    bg_label=tk.Label(image=bg_image)
-    bg_label.place(x=0, y=0, relwidth=1, relheight=1)
-    bg_label.image=bg_image
-
-    global e1,e2,b1,b2
-
-    bookid_lbl=Label(win,text='Book ID', font='Helvetica 12', bg="#F7F6F8")
-    bookid_lbl.place(x=230,y=227)
-    adminpass_lbl=Label(win,text='Admin Password',  font='Helvetica 12', bg="#F7F6F8")
-    adminpass_lbl.place(x=448,y=227)
-
-    e1=Entry(win, bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
-    e1.place(x=230.0,y=255.0,width=194.0,height=50.0)
-    e2=Entry(win,bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
-    e2.place(x=447.0,y=255.0,width=194.0,height=50.0)
-
-    delbook_btn = tk.PhotoImage(file = "./images/delbook_fdb.png")
-    b1=Button(image=delbook_btn, borderwidth=0, highlightthickness=0, command=deletebooks)
-    b1.place(x=230.0,y=494.0,width=194.0,height=71.0)
-
-    close_bookbtn = tk.PhotoImage(file = "./images/close_btn.png")
-    b2=Button(image=close_bookbtn, borderwidth=0, highlightthickness=0, command=closebooks1)
-    b2.place(x=447.0,y=494.0,width=194.0,height=71.0)
-
-    win.mainloop()
-
-def deletebooks():
-    connectdb()
-    if (e1.get() == "" or e2.get() == ""):
-        messagebox.showinfo("Error", "Field can't be Empty!")
-    else:
-        bk = 'SELECT * FROM Book WHERE bookid= %s'
-        s_book = (e1.get(),)
-        cur.execute(bk,s_book)
-        d_book =cur.fetchone()
-        if(d_book == None):
-            messagebox.showinfo("Message", "Book not Found!")
-        else:
-            if e2.get()=='admin':
-                q='DELETE FROM Book WHERE bookid="%i"'
-                cur.execute(q%(int(e1.get())))
-                con.commit()
-                
-                messagebox.showinfo("Success", "Book Deleted!")
-                closedb()
-                win.destroy()
-                admin1()
-            else:
-                messagebox.showinfo("Error", "Incorrect Password!")
-                closedb()
-
 def add_student():
     global win
     win.destroy()
@@ -882,29 +814,49 @@ def delete_student():
 
     studid_lbl=Label(win,text='Student ID', font='Helvetica 12', bg="#F7F6F8")
     studid_lbl.place(x=230,y=227)
-    adminpass_lbl=Label(win,text='Admin Password',  font='Helvetica 12', bg="#F7F6F8")
-    adminpass_lbl.place(x=448,y=227)
 
     e1=Entry(win, bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
     e1.place(x=230.0,y=255.0,width=194.0,height=50.0)
-    e2=Entry(win,bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
-    e2.place(x=447.0,y=255.0,width=194.0,height=50.0)
 
-    delbook_btn = tk.PhotoImage(file = "./images/delstud_fdb.png")
-    b1=Button(image=delbook_btn, borderwidth=0, highlightthickness=0, command=delete_students)
-    b1.place(x=230.0,y=494.0,width=194.0,height=71.0)
+    delstud_btn = tk.PhotoImage(file = "./images/delrec_fdb.png")
+    b1=Button(image=delstud_btn, borderwidth=0, highlightthickness=0, command=delsingle_stud)
+    b1.place(x=230.0,y=410.0,width=194.0,height=71.0)
+
+    delallstud_btn = tk.PhotoImage(file = "./images/delall.png")
+    b2=Button(image=delallstud_btn, borderwidth=0, highlightthickness=0, command=delall_stud)
+    b2.place(x=447.0,y=410.0,width=194.0,height=71.0)
 
     close_bookbtn = tk.PhotoImage(file = "./images/close_btn.png")
-    b2=Button(image=close_bookbtn, borderwidth=0, highlightthickness=0, command=closebooks1)
-    b2.place(x=447.0,y=494.0,width=194.0,height=71.0)
+    b3=Button(image=close_bookbtn, borderwidth=0, highlightthickness=0, command=closebooks1)
+    b3.place(x=341.0,y=494.0,width=194.0,height=71.0)
 
     win.mainloop()
 
-def delete_students():
+def delall_stud():
+    global win
     connectdb()
-    if (e1.get() == "" or e2.get() == ""):
-        messagebox.showinfo("Error", "Field can't be Empty!")
+    q='SELECT * FROM Student'
+    cur.execute(q)
+    details=cur.fetchall()
+    if len(details)!=0:
+        MsgBox = messagebox.askquestion ('Delete all','This will delete all student. Are you sure?', icon = 'warning')
+        if MsgBox == 'yes':
+            q='DELETE FROM Student'
+            cur.execute(q)
+            con.commit()
+            
+            messagebox.showinfo("Success", "Students Deleted!")
+            closedb()
+            win.destroy()
+            admin1()
+    else:
+        messagebox.showinfo("Message","No students to Delete!")
+    closedb()
 
+def delsingle_stud():
+    connectdb()
+    if (e1.get() == ""):
+        messagebox.showinfo("Error", "Field can't be Empty!")
     else:
         check = "SELECT * FROM Student WHERE studid=%s"
         ret = (e1.get(),)
@@ -913,7 +865,8 @@ def delete_students():
         if (result == None):
             messagebox.showinfo("Result", "Student Not Found!")
         else:
-            if e2.get()=='admin':
+            MsgBox = messagebox.askquestion ('Delete','Are you sure you want to delete?', icon = 'warning')
+            if MsgBox == 'yes':
                 q='DELETE FROM Student WHERE studid="%i"'
                 cur.execute(q%(int(e1.get())))
                 con.commit()
@@ -922,9 +875,94 @@ def delete_students():
                 closedb()
                 win.destroy()
                 admin1()
-            else:
-                messagebox.showinfo("Error", "Incorrect Password!")
+    closedb()
+
+def deletebook():
+    global win
+    win.destroy()
+    win=Tk()
+    win.title('Delete Book')
+    win.resizable(False,False)
+
+    global screen_height, screen_width, x_cordinate, y_cordinate
+    window_width = 878
+    window_height = 702
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    win.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
+
+    bg_image=tk.PhotoImage(file="./images/bg_img.png")
+    bg_label=tk.Label(image=bg_image)
+    bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+    bg_label.image=bg_image
+
+    global e1,e2,b1,b2
+
+    bookid_lbl=Label(win,text='Book ID', font='Helvetica 12', bg="#F7F6F8")
+    bookid_lbl.place(x=230,y=227)
+    e1=Entry(win, bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
+    e1.place(x=230.0,y=255.0,width=194.0,height=50.0)
+
+    delbook_btn = tk.PhotoImage(file = "./images/delrec_fdb.png")
+    b1=Button(image=delbook_btn, borderwidth=0, highlightthickness=0, command=delsingle_book)
+    b1.place(x=230.0,y=410.0,width=194.0,height=71.0)
+
+    delallbook_btn = tk.PhotoImage(file = "./images/delall.png")
+    b2=Button(image=delallbook_btn, borderwidth=0, highlightthickness=0, command=delall_book)
+    b2.place(x=447.0,y=410.0,width=194.0,height=71.0)
+
+    close_bookbtn = tk.PhotoImage(file = "./images/close_btn.png")
+    b3=Button(image=close_bookbtn, borderwidth=0, highlightthickness=0, command=closebooks1)
+    b3.place(x=341.0,y=494.0,width=194.0,height=71.0)
+    
+    win.mainloop()
+
+def delall_book():
+    global win
+    connectdb()
+    q='SELECT * FROM Book'
+    cur.execute(q)
+    details=cur.fetchall()
+    if len(details)!=0:
+        MsgBox = messagebox.askquestion ('Delete all','This will delete all Books. Are you sure?', icon = 'warning')
+        if MsgBox == 'yes':
+            q='DELETE FROM Book'
+            cur.execute(q)
+            con.commit()
+            
+            messagebox.showinfo("Success", "Books Deleted!")
+            closedb()
+            win.destroy()
+            admin1()
+    else:
+        messagebox.showinfo("Message","No books to Delete!")
+    closedb()
+
+def delsingle_book():
+    connectdb()
+    if (e1.get() == ""):
+        messagebox.showinfo("Error", "Field can't be Empty!")
+    else:
+        bk = 'SELECT * FROM Book WHERE bookid= %s'
+        s_book = (e1.get(),)
+        cur.execute(bk,s_book)
+        d_book =cur.fetchone()
+        if(d_book == None):
+            messagebox.showinfo("Message", "Book not Found!")
+        else:
+            MsgBox = messagebox.askquestion ('Delete','Are you sure you want to delete?', icon = 'warning')
+            if MsgBox == 'yes':
+                q='DELETE FROM Book WHERE bookid="%i"'
+                cur.execute(q%(int(e1.get())))
+                con.commit()
+                
+                messagebox.showinfo("Success", "Record Deleted!")
                 closedb()
+                win.destroy()
+                admin1()
+    closedb()
 
 def delborrowed_rec():
     global win
@@ -947,31 +985,52 @@ def delborrowed_rec():
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
     bg_label.image=bg_image
 
-    global e1,e2,b1,b2
+    global e1,e2,b1,b2,b3
 
     bookid_lbl=Label(win,text='Borrow Key', font='Helvetica 12', bg="#F7F6F8")
     bookid_lbl.place(x=230,y=227)
-    adminpass_lbl=Label(win,text='Admin Password',  font='Helvetica 12', bg="#F7F6F8")
-    adminpass_lbl.place(x=448,y=227)
 
     e1=Entry(win, bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
     e1.place(x=230.0,y=255.0,width=194.0,height=50.0)
-    e2=Entry(win,bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
-    e2.place(x=447.0,y=255.0,width=194.0,height=50.0)
 
     delbookborrowed_btn = tk.PhotoImage(file = "./images/delrec_fdb.png")
-    b1=Button(image=delbookborrowed_btn, borderwidth=0, highlightthickness=0, command=delborrowed_recs)
-    b1.place(x=230.0,y=494.0,width=194.0,height=71.0)
+    b1=Button(image=delbookborrowed_btn, borderwidth=0, highlightthickness=0, command=delsingle_rec)
+    b1.place(x=230.0,y=410.0,width=194.0,height=71.0)
 
-    close1_bookbtn = tk.PhotoImage(file = "./images/close_btn.png")
-    b2=Button(image=close1_bookbtn, borderwidth=0, highlightthickness=0, command=closebooks1)
-    b2.place(x=447.0,y=494.0,width=194.0,height=71.0)
+    delallrec_btn = tk.PhotoImage(file = "./images/delall.png")
+    b2=Button(image=delallrec_btn, borderwidth=0, highlightthickness=0, command=delall_rec)
+    b2.place(x=447.0,y=410.0,width=194.0,height=71.0)
+
+    close_bookbtn = tk.PhotoImage(file = "./images/close_btn.png")
+    b3=Button(image=close_bookbtn, borderwidth=0, highlightthickness=0, command=closebooks1)
+    b3.place(x=341.0,y=494.0,width=194.0,height=71.0)
 
     win.mainloop()
 
-def delborrowed_recs():
+def delall_rec():
+    global win
     connectdb()
-    if (e1.get() == "" or e2.get() == ""):
+    q='SELECT * FROM BookBorrow'
+    cur.execute(q)
+    details=cur.fetchall()
+    if len(details)!=0:
+        MsgBox = messagebox.askquestion ('Delete all','This will delete all records. Are you sure?', icon = 'warning')
+        if MsgBox == 'yes':
+            q='DELETE FROM BookBorrow'
+            cur.execute(q)
+            con.commit()
+            
+            messagebox.showinfo("Success", "Records Deleted!")
+            closedb()
+            win.destroy()
+            admin1()
+    else:
+        messagebox.showinfo("Message","No records to Delete!")
+    closedb()
+
+def delsingle_rec():
+    connectdb()
+    if (e1.get() == ""):
         messagebox.showinfo("Error", "Field can't be Empty!")
     else:
         bk1 = 'SELECT * FROM BookBorrow WHERE borrowkey= %s'
@@ -981,7 +1040,8 @@ def delborrowed_recs():
         if(d_book1 == None):
             messagebox.showinfo("Message", "Book not Found!")
         else:
-            if e2.get()=='admin':
+            MsgBox = messagebox.askquestion ('Delete','Are you sure you want to delete?', icon = 'warning')
+            if MsgBox == 'yes':
                 q='DELETE FROM BookBorrow WHERE borrowkey="%i"'
                 cur.execute(q%(int(e1.get())))
                 con.commit()
@@ -990,10 +1050,7 @@ def delborrowed_recs():
                 closedb()
                 win.destroy()
                 admin1()
-            else:
-                messagebox.showinfo("Error", "Incorrect Password!")
-                closedb()
-
+    closedb()
 
 def connectdb():
     global con,cur
@@ -1007,7 +1064,7 @@ def connectdb():
         l='CREATE TABLE IF NOT EXISTS Student(name varchar(50),studid varchar(10),password varchar(30),yearlevel varchar(20),course varchar(20), PRIMARY KEY(studid))'
         b='CREATE TABLE IF NOT EXISTS Book(bookid int(15), title varchar(50),author varchar(50),genre varchar(50),status varchar(20), PRIMARY KEY(bookid))'
         i='CREATE TABLE IF NOT EXISTS BookBorrow(borrowkey int(20) AUTO_INCREMENT,stdid varchar(10),bookid varchar(15),borrowdate date,returndate date DEFAULT NULL , PRIMARY KEY (borrowkey))'
-        c='ALTER TABLE BookBorrow AUTO_INCREMENT = 387'
+        c='ALTER TABLE BookBorrow AUTO_INCREMENT = 1001'
         
         cur.execute(l)
         cur.execute(b)
@@ -1016,6 +1073,90 @@ def connectdb():
         enter=enter+1
     query='SELECT * FROM Student'
     cur.execute(query)
+
+def closelogin():
+    global window
+    window.destroy()
+    home()
+
+def studhome():
+    global window,b1,b2,e1,e2,con,cur,win
+    window.destroy()
+    window=Tk()
+    window.title('Student Login')
+    window.resizable(False,False)
+    
+    global screen_height, screen_width, x_cordinate, y_cordinate
+    window_width = 878
+    window_height = 702
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    window.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
+
+    bg_image=tk.PhotoImage(file="./images/bg_img.png")
+    bg_label=tk.Label(image=bg_image)
+    bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+    bg_label.image=bg_image 
+    
+    usid=Label(window,text='Student ID', font='Helvetica 12', bg="#F7F6F8")
+    usid.place(x=260,y=230)
+    paswrd=Label(window,text='Password',  font='Helvetica 12', bg="#F7F6F8")
+    paswrd.place(x=260,y=323)
+
+    e1=Entry(window, bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
+    e1.place(x=260.0,y=258.0,width=359.0,height=58.0)
+    e2=Entry(window,bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17', show = "*")
+    e2.place(x=260.0,y=350.0,width=358.0,height=58.0)
+
+    std_btn_img = tk.PhotoImage(file = "./images/student.png")
+    b1=Button(image=std_btn_img, borderwidth=0, highlightthickness=0, command=loginstd)
+    b1.place(x=230.0,y=494.0,width=194.0,height=71.0)
+    close_studbtn = tk.PhotoImage(file = "./images/close_btn.png")
+    b2=Button(image=close_studbtn, borderwidth=0, highlightthickness=0, command=closelogin)
+    b2.place(x=447.0,y=494.0,width=194.0,height=71.0)
+    window.mainloop()
+
+def adminhome():
+    global window,b1,b2,e1,e2,con,cur,win
+    window.destroy()
+    window=Tk()
+    window.title('Admin Login')
+    window.resizable(False,False)
+    
+    global screen_height, screen_width, x_cordinate, y_cordinate
+    window_width = 878
+    window_height = 702
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    window.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
+
+    bg_image=tk.PhotoImage(file="./images/bg_img.png")
+    bg_label=tk.Label(image=bg_image)
+    bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+    bg_label.image=bg_image 
+    
+    usid=Label(window,text='Username', font='Helvetica 12', bg="#F7F6F8")
+    usid.place(x=260,y=230)
+    paswrd=Label(window,text='Password',  font='Helvetica 12', bg="#F7F6F8")
+    paswrd.place(x=260,y=323)
+
+    e1=Entry(window, bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
+    e1.place(x=260.0,y=258.0,width=359.0,height=58.0)
+    e1.insert(0,"admin")
+    e2=Entry(window,bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17', show = "*")
+    e2.place(x=260.0,y=350.0,width=358.0,height=58.0)
+
+    std_btn_img = tk.PhotoImage(file = "./images/admin.png")
+    b1=Button(image=std_btn_img, borderwidth=0, highlightthickness=0, command=loginadmin)
+    b1.place(x=230.0,y=494.0,width=194.0,height=71.0)
+    close_adminbtn = tk.PhotoImage(file = "./images/close_btn.png")
+    b2=Button(image=close_adminbtn, borderwidth=0, highlightthickness=0, command=closelogin)
+    b2.place(x=447.0,y=494.0,width=194.0,height=71.0)
+    window.mainloop()
 
 def home():
     try:
@@ -1038,23 +1179,20 @@ def home():
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
         bg_label.image=bg_image 
         
-        usid=Label(window,text='Student or Admin ID', font='Helvetica 12', bg="#F7F6F8")
-        usid.place(x=260,y=200)
-        paswrd=Label(window,text='Password',  font='Helvetica 12', bg="#F7F6F8")
-        paswrd.place(x=260,y=293)
+        selact=Label(window,text='WHO ARE YOU?', font='Helvetica 17', bg="#F7F6F8")
+        selact.place(x=346,y=269)
+        usid=Label(window,text='Student', font='Helvetica 17', bg="#F7F6F8")
+        usid.place(x=298,y=451)
+        paswrd=Label(window,text='Admin',  font='Helvetica 17', bg="#F7F6F8")
+        paswrd.place(x=502,y=451)
 
-        e1=Entry(window, bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17')
-        e1.place(x=260.0,y=228.0,width=359.0,height=58.0)
-        e2=Entry(window,bd=0,bg="#FFFFFF",highlightthickness=0, font='Helvetica 17', show = "*")
-        e2.place(x=260.0,y=320.0,width=358.0,height=58.0)
-
-        std_btn_img = tk.PhotoImage(file = "./images/std_img_log.png")
-        b1=Button(image=std_btn_img, borderwidth=0, highlightthickness=0, command=loginstd)
-        b1.place(x=251.0,y=410.0,width=375.0,height=71.0)
-        admin_btn_img = tk.PhotoImage(file = "./images/admin_img_log.png")
-        b2=Button(image=admin_btn_img, borderwidth=0, highlightthickness=0, command=loginadmin)
-        b2.place(x=249.0,y=486.0,width=375.0,height=71.0)
-
+        std_btn_img = tk.PhotoImage(file = "./images/imstud.png")
+        b1=Button(image=std_btn_img, borderwidth=0, highlightthickness=0, command=studhome, bg="#F7F6F8")
+        b1.place(x=298.0,y=340.0,width=100.0,height=100.0)
+        admin_btn_img = tk.PhotoImage(file = "./images/imadmin.png")
+        b2=Button(image=admin_btn_img, borderwidth=0, highlightthickness=0, command=adminhome, bg="#F7F6F8")
+        b2.place(x=488.0,y=340.0,width=100.0,height=100.0)
+        
         window.mainloop()
     except Exception:
         window.destroy()
